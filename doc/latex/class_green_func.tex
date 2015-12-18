@@ -1,0 +1,117 @@
+\hypertarget{class_green_func}{}\section{Green\+Func$<$ T $>$ Class Template Reference}
+\label{class_green_func}\index{Green\+Func$<$ T $>$@{Green\+Func$<$ T $>$}}
+
+
+{\ttfamily \#include $<$Greens\+Function.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_green_func_a8df32188adfab6dae187ecf4f994c07a}{Green\+Func} (const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\hyperlink{class_green_func_ad46acf5e9fc69c22244e1c34bf238f65}{$\sim$\+Green\+Func} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+T \hyperlink{class_green_func_aaa1439355a01ce37371c7f0347c23065}{get\+\_\+val} (size\+\_\+t v, size\+\_\+t v0) const 
+\begin{DoxyCompactList}\small\item\em Get the value of Green\textquotesingle{}s function\+: G(v, v0). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+long int \hyperlink{class_green_func_a4a809863bd810679626d77da29924703}{get\+\_\+1didx} (size\+\_\+t v, size\+\_\+t v0) const 
+\begin{DoxyCompactList}\small\item\em Compute the index in the 1\+D map corresponding to the two global indices. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+size\+\_\+t \hyperlink{class_green_func_a420f781055af7fe367fca14f8ffa0b2f}{sz}
+\item 
+size\+\_\+t \hyperlink{class_green_func_a38599c273580c0157beb626367f3a541}{onedsz}
+\item 
+T $\ast$ \hyperlink{class_green_func_ae7cdc69e47d1ac1584116bcee5f0fff0}{onedmap}
+\item 
+T \hyperlink{class_green_func_a8cb6151b747b186376aed30508f9b1bc}{zeroval}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T = float$>$class Green\+Func$<$ T $>$}
+
+
+
+ \hyperlink{_greens_function_8h}{Greens\+Function.\+h} This class creates a map to represent Green\textquotesingle{}s function G(v, v0), so that distance, log, and sqrt have to be computed only once. Since, G(v, v0) = G(v0, v), only half of the matrix is saved. It is laid out linearly as a 1\+D map. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_green_func_a8df32188adfab6dae187ecf4f994c07a}{}\index{Green\+Func@{Green\+Func}!Green\+Func@{Green\+Func}}
+\index{Green\+Func@{Green\+Func}!Green\+Func@{Green\+Func}}
+\subsubsection[{Green\+Func}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ {\bf Green\+Func}$<$ T $>$\+::{\bf Green\+Func} (
+\begin{DoxyParamCaption}
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_green_func_a8df32188adfab6dae187ecf4f994c07a}
+
+
+Constructor. 
+
+Create Green\textquotesingle{}s function for a 2\+D or 3\+D regular grid.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rgrid} & Reference to the regular grid. \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_green_func_ad46acf5e9fc69c22244e1c34bf238f65}{}\index{Green\+Func@{Green\+Func}!````~Green\+Func@{$\sim$\+Green\+Func}}
+\index{````~Green\+Func@{$\sim$\+Green\+Func}!Green\+Func@{Green\+Func}}
+\subsubsection[{$\sim$\+Green\+Func}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ {\bf Green\+Func}$<$ T $>$\+::$\sim${\bf Green\+Func} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_green_func_ad46acf5e9fc69c22244e1c34bf238f65}
+
+
+Destructor. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_green_func_a4a809863bd810679626d77da29924703}{}\index{Green\+Func@{Green\+Func}!get\+\_\+1didx@{get\+\_\+1didx}}
+\index{get\+\_\+1didx@{get\+\_\+1didx}!Green\+Func@{Green\+Func}}
+\subsubsection[{get\+\_\+1didx}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ long int {\bf Green\+Func}$<$ T $>$\+::get\+\_\+1didx (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{v, }
+\item[{size\+\_\+t}]{v0}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}\label{class_green_func_a4a809863bd810679626d77da29924703}
+
+
+Compute the index in the 1\+D map corresponding to the two global indices. 
+
+\hypertarget{class_green_func_aaa1439355a01ce37371c7f0347c23065}{}\index{Green\+Func@{Green\+Func}!get\+\_\+val@{get\+\_\+val}}
+\index{get\+\_\+val@{get\+\_\+val}!Green\+Func@{Green\+Func}}
+\subsubsection[{get\+\_\+val}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T {\bf Green\+Func}$<$ T $>$\+::get\+\_\+val (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{v, }
+\item[{size\+\_\+t}]{v0}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{class_green_func_aaa1439355a01ce37371c7f0347c23065}
+
+
+Get the value of Green\textquotesingle{}s function\+: G(v, v0). 
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_green_func_ae7cdc69e47d1ac1584116bcee5f0fff0}{}\index{Green\+Func@{Green\+Func}!onedmap@{onedmap}}
+\index{onedmap@{onedmap}!Green\+Func@{Green\+Func}}
+\subsubsection[{onedmap}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T$\ast$ {\bf Green\+Func}$<$ T $>$\+::onedmap\hspace{0.3cm}{\ttfamily [private]}}\label{class_green_func_ae7cdc69e47d1ac1584116bcee5f0fff0}
+The 1\+D map used to store the function \hypertarget{class_green_func_a38599c273580c0157beb626367f3a541}{}\index{Green\+Func@{Green\+Func}!onedsz@{onedsz}}
+\index{onedsz@{onedsz}!Green\+Func@{Green\+Func}}
+\subsubsection[{onedsz}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ size\+\_\+t {\bf Green\+Func}$<$ T $>$\+::onedsz\hspace{0.3cm}{\ttfamily [private]}}\label{class_green_func_a38599c273580c0157beb626367f3a541}
+Size of the 1\+D map (= sz$\ast$(sz-\/1) / 2) \hypertarget{class_green_func_a420f781055af7fe367fca14f8ffa0b2f}{}\index{Green\+Func@{Green\+Func}!sz@{sz}}
+\index{sz@{sz}!Green\+Func@{Green\+Func}}
+\subsubsection[{sz}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ size\+\_\+t {\bf Green\+Func}$<$ T $>$\+::sz\hspace{0.3cm}{\ttfamily [private]}}\label{class_green_func_a420f781055af7fe367fca14f8ffa0b2f}
+Size of the grid \hypertarget{class_green_func_a8cb6151b747b186376aed30508f9b1bc}{}\index{Green\+Func@{Green\+Func}!zeroval@{zeroval}}
+\index{zeroval@{zeroval}!Green\+Func@{Green\+Func}}
+\subsubsection[{zeroval}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T {\bf Green\+Func}$<$ T $>$\+::zeroval\hspace{0.3cm}{\ttfamily [private]}}\label{class_green_func_a8cb6151b747b186376aed30508f9b1bc}
+Value corresponding to v = v0 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_greens_function_8h}{Greens\+Function.\+h}\end{DoxyCompactItemize}

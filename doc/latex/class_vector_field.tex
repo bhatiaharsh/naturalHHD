@@ -1,0 +1,294 @@
+\hypertarget{class_vector_field}{}\section{Vector\+Field$<$ T $>$ Class Template Reference}
+\label{class_vector_field}\index{Vector\+Field$<$ T $>$@{Vector\+Field$<$ T $>$}}
+
+
+{\ttfamily \#include $<$Vector\+Field.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_vector_field_a72a70495c8263f0f35246290f250efce}{init} ()
+\begin{DoxyCompactList}\small\item\em initialize a vector field \end{DoxyCompactList}\item 
+\hyperlink{class_vector_field_ad3c8e719037c40a4122fad0911ae13c1}{$\sim$\+Vector\+Field} ()
+\begin{DoxyCompactList}\small\item\em destructor \end{DoxyCompactList}\item 
+\hyperlink{class_vector_field_ad5ee5620f8b01cbf0d7faaf15d7d07c6}{Vector\+Field} ()
+\begin{DoxyCompactList}\small\item\em default constructor \end{DoxyCompactList}\item 
+\hyperlink{class_vector_field_a16fa16212675ff13648096b33af955b2}{Vector\+Field} (string filename, uint dim\+\_\+)
+\begin{DoxyCompactList}\small\item\em read a vector field \end{DoxyCompactList}\item 
+\hyperlink{class_vector_field_aedfb7f4fc915b8897e928be65aad4696}{Vector\+Field} (const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em create a test vector field \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_a5c4bde5b0ee1ac3400029bcf165a577c}{read\+\_\+from\+\_\+file} (string filename)
+\begin{DoxyCompactList}\small\item\em read from file \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_a019e01172088d8afab84281e49f175f4}{write\+\_\+to\+\_\+file} (string filename) const 
+\begin{DoxyCompactList}\small\item\em write to file \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_adb5637ed5fe502b90ff814cb117a7cb6}{need\+\_\+magnitudes} (const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em compute magnitudes \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_a507f4d62289ea004846947543847564c}{need\+\_\+divcurl} (const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em compute divergence and curl \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_a28cf001aee5ee571d9b3a521a25694c6}{rotate\+\_\+\+J} ()
+\begin{DoxyCompactList}\small\item\em rotate a vector field by 2pi \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_a10d6ceb8c89a5c401e207454899a1d2c}{compute\+\_\+as\+\_\+gradient\+\_\+field} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em Compute a vector field as a gradient of a scalar field. \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_ac5ed12e73ad64f03317936af6940be2c}{compute\+\_\+as\+\_\+curl\+\_\+field} (const T $\ast$vu, const T $\ast$vv, const T $\ast$vw, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em Compute a vector field as a curl of a scalar field. \end{DoxyCompactList}\item 
+void \hyperlink{class_vector_field_ab9550f895ee09f5040072da6660cd44b}{compute\+\_\+as\+\_\+harmonic\+\_\+field} (const \hyperlink{class_vector_field}{Vector\+Field}$<$ T $>$ \&vf, const \hyperlink{class_vector_field}{Vector\+Field}$<$ T $>$ \&d, const \hyperlink{class_vector_field}{Vector\+Field}$<$ T $>$ \&r)
+\begin{DoxyCompactList}\small\item\em Compute a harmonic field. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \hyperlink{class_vector_field_aa3d7024cb4d87bc1cb33c44a62e74685}{dim}
+\item 
+size\+\_\+t \hyperlink{class_vector_field_a23c7ed72d08a14b70ea6193132ad93b8}{sz}
+\begin{DoxyCompactList}\small\item\em dimensionality of the vector field \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{class_vector_field_a845073ac9ee0dedbd94ac7b2c79d982d}{u}
+\begin{DoxyCompactList}\small\item\em number of vectors in the field \end{DoxyCompactList}\item 
+T $\ast$ \hyperlink{class_vector_field_a14e25f68256af61b46828481053c9a74}{v}
+\item 
+T $\ast$ \hyperlink{class_vector_field_ab0457f5cb47936f2472d76b34c2812e5}{w}
+\item 
+T $\ast$ \hyperlink{class_vector_field_a107913a4cbfc1601d0be3fad265541ed}{mgn}
+\item 
+T $\ast$ \hyperlink{class_vector_field_ab413392c6af739bbcd25a9aa6029cdea}{div}
+\item 
+T $\ast$ \hyperlink{class_vector_field_a0b4a255f9ef92c902fb4f67f0a8da219}{curlu}
+\item 
+T $\ast$ \hyperlink{class_vector_field_ad870f5b9d757f0a4c8eb8665c9732871}{curlv}
+\item 
+T $\ast$ \hyperlink{class_vector_field_a4df143789fd195e602b6ef1cb4d9fac1}{curlw}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_vector_field_a3f35d9986bff46b9c6fc39241b26af33}{match\+\_\+grid} (const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid, std\+::string tag=\char`\"{}\char`\"{}) const 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T = float$>$class Vector\+Field$<$ T $>$}
+
+
+
+ \hyperlink{_vector_field_8h}{Vector\+Field.\+h} Class for storing a vector field. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_vector_field_ad3c8e719037c40a4122fad0911ae13c1}{}\index{Vector\+Field@{Vector\+Field}!````~Vector\+Field@{$\sim$\+Vector\+Field}}
+\index{````~Vector\+Field@{$\sim$\+Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{$\sim$\+Vector\+Field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ {\bf Vector\+Field}$<$ T $>$\+::$\sim${\bf Vector\+Field} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_ad3c8e719037c40a4122fad0911ae13c1}
+
+
+destructor 
+
+\hypertarget{class_vector_field_ad5ee5620f8b01cbf0d7faaf15d7d07c6}{}\index{Vector\+Field@{Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\index{Vector\+Field@{Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{Vector\+Field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ {\bf Vector\+Field}$<$ T $>$\+::{\bf Vector\+Field} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_ad5ee5620f8b01cbf0d7faaf15d7d07c6}
+
+
+default constructor 
+
+\hypertarget{class_vector_field_a16fa16212675ff13648096b33af955b2}{}\index{Vector\+Field@{Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\index{Vector\+Field@{Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{Vector\+Field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ {\bf Vector\+Field}$<$ T $>$\+::{\bf Vector\+Field} (
+\begin{DoxyParamCaption}
+\item[{string}]{filename, }
+\item[{uint}]{dim\+\_\+}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a16fa16212675ff13648096b33af955b2}
+
+
+read a vector field 
+
+\hypertarget{class_vector_field_aedfb7f4fc915b8897e928be65aad4696}{}\index{Vector\+Field@{Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\index{Vector\+Field@{Vector\+Field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{Vector\+Field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ {\bf Vector\+Field}$<$ T $>$\+::{\bf Vector\+Field} (
+\begin{DoxyParamCaption}
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_aedfb7f4fc915b8897e928be65aad4696}
+
+
+create a test vector field 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_vector_field_ac5ed12e73ad64f03317936af6940be2c}{}\index{Vector\+Field@{Vector\+Field}!compute\+\_\+as\+\_\+curl\+\_\+field@{compute\+\_\+as\+\_\+curl\+\_\+field}}
+\index{compute\+\_\+as\+\_\+curl\+\_\+field@{compute\+\_\+as\+\_\+curl\+\_\+field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{compute\+\_\+as\+\_\+curl\+\_\+field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::compute\+\_\+as\+\_\+curl\+\_\+field (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{vu, }
+\item[{const T $\ast$}]{vv, }
+\item[{const T $\ast$}]{vw, }
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_ac5ed12e73ad64f03317936af6940be2c}
+
+
+Compute a vector field as a curl of a scalar field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & three components of a vector field \\
+\hline
+{\em rgrid} & 3\+D regular grid on which the fields are defined \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_vector_field_a10d6ceb8c89a5c401e207454899a1d2c}{}\index{Vector\+Field@{Vector\+Field}!compute\+\_\+as\+\_\+gradient\+\_\+field@{compute\+\_\+as\+\_\+gradient\+\_\+field}}
+\index{compute\+\_\+as\+\_\+gradient\+\_\+field@{compute\+\_\+as\+\_\+gradient\+\_\+field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{compute\+\_\+as\+\_\+gradient\+\_\+field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::compute\+\_\+as\+\_\+gradient\+\_\+field (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a10d6ceb8c89a5c401e207454899a1d2c}
+
+
+Compute a vector field as a gradient of a scalar field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f} & A scalar field \\
+\hline
+{\em rgrid} & Regular grid on which the fields are defined \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_vector_field_ab9550f895ee09f5040072da6660cd44b}{}\index{Vector\+Field@{Vector\+Field}!compute\+\_\+as\+\_\+harmonic\+\_\+field@{compute\+\_\+as\+\_\+harmonic\+\_\+field}}
+\index{compute\+\_\+as\+\_\+harmonic\+\_\+field@{compute\+\_\+as\+\_\+harmonic\+\_\+field}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{compute\+\_\+as\+\_\+harmonic\+\_\+field}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::compute\+\_\+as\+\_\+harmonic\+\_\+field (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vector\+Field}$<$ T $>$ \&}]{vf, }
+\item[{const {\bf Vector\+Field}$<$ T $>$ \&}]{d, }
+\item[{const {\bf Vector\+Field}$<$ T $>$ \&}]{r}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_ab9550f895ee09f5040072da6660cd44b}
+
+
+Compute a harmonic field. 
+
+\hypertarget{class_vector_field_a72a70495c8263f0f35246290f250efce}{}\index{Vector\+Field@{Vector\+Field}!init@{init}}
+\index{init@{init}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{init}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a72a70495c8263f0f35246290f250efce}
+
+
+initialize a vector field 
+
+\hypertarget{class_vector_field_a3f35d9986bff46b9c6fc39241b26af33}{}\index{Vector\+Field@{Vector\+Field}!match\+\_\+grid@{match\+\_\+grid}}
+\index{match\+\_\+grid@{match\+\_\+grid}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{match\+\_\+grid}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ bool {\bf Vector\+Field}$<$ T $>$\+::match\+\_\+grid (
+\begin{DoxyParamCaption}
+\item[{const {\bf R\+Grid} \&}]{rgrid, }
+\item[{std\+::string}]{tag = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}\label{class_vector_field_a3f35d9986bff46b9c6fc39241b26af33}
+\hypertarget{class_vector_field_a507f4d62289ea004846947543847564c}{}\index{Vector\+Field@{Vector\+Field}!need\+\_\+divcurl@{need\+\_\+divcurl}}
+\index{need\+\_\+divcurl@{need\+\_\+divcurl}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{need\+\_\+divcurl}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::need\+\_\+divcurl (
+\begin{DoxyParamCaption}
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a507f4d62289ea004846947543847564c}
+
+
+compute divergence and curl 
+
+\hypertarget{class_vector_field_adb5637ed5fe502b90ff814cb117a7cb6}{}\index{Vector\+Field@{Vector\+Field}!need\+\_\+magnitudes@{need\+\_\+magnitudes}}
+\index{need\+\_\+magnitudes@{need\+\_\+magnitudes}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{need\+\_\+magnitudes}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::need\+\_\+magnitudes (
+\begin{DoxyParamCaption}
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_adb5637ed5fe502b90ff814cb117a7cb6}
+
+
+compute magnitudes 
+
+\hypertarget{class_vector_field_a5c4bde5b0ee1ac3400029bcf165a577c}{}\index{Vector\+Field@{Vector\+Field}!read\+\_\+from\+\_\+file@{read\+\_\+from\+\_\+file}}
+\index{read\+\_\+from\+\_\+file@{read\+\_\+from\+\_\+file}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{read\+\_\+from\+\_\+file}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::read\+\_\+from\+\_\+file (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a5c4bde5b0ee1ac3400029bcf165a577c}
+
+
+read from file 
+
+-\/-\/-\/--- store the read data in (u, v, w) format \hypertarget{class_vector_field_a28cf001aee5ee571d9b3a521a25694c6}{}\index{Vector\+Field@{Vector\+Field}!rotate\+\_\+\+J@{rotate\+\_\+\+J}}
+\index{rotate\+\_\+\+J@{rotate\+\_\+\+J}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{rotate\+\_\+\+J}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::rotate\+\_\+\+J (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a28cf001aee5ee571d9b3a521a25694c6}
+
+
+rotate a vector field by 2pi 
+
+\hypertarget{class_vector_field_a019e01172088d8afab84281e49f175f4}{}\index{Vector\+Field@{Vector\+Field}!write\+\_\+to\+\_\+file@{write\+\_\+to\+\_\+file}}
+\index{write\+\_\+to\+\_\+file@{write\+\_\+to\+\_\+file}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{write\+\_\+to\+\_\+file}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ void {\bf Vector\+Field}$<$ T $>$\+::write\+\_\+to\+\_\+file (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{class_vector_field_a019e01172088d8afab84281e49f175f4}
+
+
+write to file 
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_vector_field_a0b4a255f9ef92c902fb4f67f0a8da219}{}\index{Vector\+Field@{Vector\+Field}!curlu@{curlu}}
+\index{curlu@{curlu}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{curlu}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T$\ast$ {\bf Vector\+Field}$<$ T $>$\+::curlu}\label{class_vector_field_a0b4a255f9ef92c902fb4f67f0a8da219}
+\hypertarget{class_vector_field_ad870f5b9d757f0a4c8eb8665c9732871}{}\index{Vector\+Field@{Vector\+Field}!curlv@{curlv}}
+\index{curlv@{curlv}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{curlv}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T $\ast$ {\bf Vector\+Field}$<$ T $>$\+::curlv}\label{class_vector_field_ad870f5b9d757f0a4c8eb8665c9732871}
+\hypertarget{class_vector_field_a4df143789fd195e602b6ef1cb4d9fac1}{}\index{Vector\+Field@{Vector\+Field}!curlw@{curlw}}
+\index{curlw@{curlw}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{curlw}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T $\ast$ {\bf Vector\+Field}$<$ T $>$\+::curlw}\label{class_vector_field_a4df143789fd195e602b6ef1cb4d9fac1}
+\hypertarget{class_vector_field_aa3d7024cb4d87bc1cb33c44a62e74685}{}\index{Vector\+Field@{Vector\+Field}!dim@{dim}}
+\index{dim@{dim}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{dim}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ uint8\+\_\+t {\bf Vector\+Field}$<$ T $>$\+::dim}\label{class_vector_field_aa3d7024cb4d87bc1cb33c44a62e74685}
+\hypertarget{class_vector_field_ab413392c6af739bbcd25a9aa6029cdea}{}\index{Vector\+Field@{Vector\+Field}!div@{div}}
+\index{div@{div}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{div}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T$\ast$ {\bf Vector\+Field}$<$ T $>$\+::div}\label{class_vector_field_ab413392c6af739bbcd25a9aa6029cdea}
+\hypertarget{class_vector_field_a107913a4cbfc1601d0be3fad265541ed}{}\index{Vector\+Field@{Vector\+Field}!mgn@{mgn}}
+\index{mgn@{mgn}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{mgn}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T$\ast$ {\bf Vector\+Field}$<$ T $>$\+::mgn}\label{class_vector_field_a107913a4cbfc1601d0be3fad265541ed}
+\hypertarget{class_vector_field_a23c7ed72d08a14b70ea6193132ad93b8}{}\index{Vector\+Field@{Vector\+Field}!sz@{sz}}
+\index{sz@{sz}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{sz}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ size\+\_\+t {\bf Vector\+Field}$<$ T $>$\+::sz}\label{class_vector_field_a23c7ed72d08a14b70ea6193132ad93b8}
+
+
+dimensionality of the vector field 
+
+\hypertarget{class_vector_field_a845073ac9ee0dedbd94ac7b2c79d982d}{}\index{Vector\+Field@{Vector\+Field}!u@{u}}
+\index{u@{u}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{u}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T$\ast$ {\bf Vector\+Field}$<$ T $>$\+::u}\label{class_vector_field_a845073ac9ee0dedbd94ac7b2c79d982d}
+
+
+number of vectors in the field 
+
+\hypertarget{class_vector_field_a14e25f68256af61b46828481053c9a74}{}\index{Vector\+Field@{Vector\+Field}!v@{v}}
+\index{v@{v}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{v}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T $\ast$ {\bf Vector\+Field}$<$ T $>$\+::v}\label{class_vector_field_a14e25f68256af61b46828481053c9a74}
+\hypertarget{class_vector_field_ab0457f5cb47936f2472d76b34c2812e5}{}\index{Vector\+Field@{Vector\+Field}!w@{w}}
+\index{w@{w}!Vector\+Field@{Vector\+Field}}
+\subsubsection[{w}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T = float$>$ T $\ast$ {\bf Vector\+Field}$<$ T $>$\+::w}\label{class_vector_field_ab0457f5cb47936f2472d76b34c2812e5}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_vector_field_8h}{Vector\+Field.\+h}\end{DoxyCompactItemize}

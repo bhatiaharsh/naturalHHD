@@ -1,0 +1,120 @@
+\hypertarget{namespaceinteg}{}\section{integ Namespace Reference}
+\label{namespaceinteg}\index{integ@{integ}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{namespaceinteg_a7bcd1288ac97babaa60491414c5d2aa1}{trapezoidal\+\_\+1\+D} (const std\+::vector$<$ T $>$ \&f, size\+\_\+t N, T h)
+\begin{DoxyCompactList}\small\item\em 
+
+ \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{namespaceinteg_ac00b1e6f9f566322518105a3710d5df7}{trapezoidal\+\_\+1\+D} (const T $\ast$f, size\+\_\+t N, T h)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{namespaceinteg_aff6324bc1d562610bb2086538b65657c}{trapezoidal\+\_\+2\+D} (const std\+::vector$<$ T $>$ \&f, size\+\_\+t X, size\+\_\+t Y, T dx, T dy)
+\begin{DoxyCompactList}\small\item\em 
+
+ \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{namespaceinteg_ae022b7e8292beec746f1b72e0a09484d}{trapezoidal\+\_\+2\+D} (const T $\ast$f, size\+\_\+t X, size\+\_\+t Y, T dx, T dy)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{namespaceinteg_a71b791c6163be10049667e5ba5ba7617}{trapezoidal\+\_\+3\+D} (const std\+::vector$<$ T $>$ \&f, size\+\_\+t X, size\+\_\+t Y, size\+\_\+t Z, T dx, T dy, T dz)
+\begin{DoxyCompactList}\small\item\em 
+
+ \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\T \hyperlink{namespaceinteg_adbdbd0ba01246eeb2b0b8659107d58ff}{trapezoidal\+\_\+3\+D} (const T $\ast$f, size\+\_\+t X, size\+\_\+t Y, size\+\_\+t Z, T dx, T dy, T dz)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+ \hyperlink{trapezoidal_integration_8h}{trapezoidal\+Integration.\+h} Library for approximating the integral of a function over 1\+D, 2\+D, and 3\+D domains using trapezoidal methjod.
+\begin{DoxyItemize}
+\item The regular grid \mbox{[}X x Y x Z\mbox{]} has grid spacings (dx, dy, dz).
+\end{DoxyItemize}
+
+Author\+: Harsh Bhatia. \href{mailto:bhatia4@llnl.gov}{\tt bhatia4@llnl.\+gov} 
+
+\subsection{Function Documentation}
+\hypertarget{namespaceinteg_a7bcd1288ac97babaa60491414c5d2aa1}{}\index{integ@{integ}!trapezoidal\+\_\+1\+D@{trapezoidal\+\_\+1\+D}}
+\index{trapezoidal\+\_\+1\+D@{trapezoidal\+\_\+1\+D}!integ@{integ}}
+\subsubsection[{trapezoidal\+\_\+1\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T integ\+::trapezoidal\+\_\+1\+D (
+\begin{DoxyParamCaption}
+\item[{const std\+::vector$<$ T $>$ \&}]{f, }
+\item[{size\+\_\+t}]{N, }
+\item[{T}]{h}
+\end{DoxyParamCaption}
+)}\label{namespaceinteg_a7bcd1288ac97babaa60491414c5d2aa1}
+
+
+
+
+ 
+
+L\+I\+N\+E integral using 1\+D trapezoidal rule the corners of the line need to be counted once everything in the interior needs to be counted twice \hypertarget{namespaceinteg_ac00b1e6f9f566322518105a3710d5df7}{}\index{integ@{integ}!trapezoidal\+\_\+1\+D@{trapezoidal\+\_\+1\+D}}
+\index{trapezoidal\+\_\+1\+D@{trapezoidal\+\_\+1\+D}!integ@{integ}}
+\subsubsection[{trapezoidal\+\_\+1\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T integ\+::trapezoidal\+\_\+1\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{size\+\_\+t}]{N, }
+\item[{T}]{h}
+\end{DoxyParamCaption}
+)}\label{namespaceinteg_ac00b1e6f9f566322518105a3710d5df7}
+\hypertarget{namespaceinteg_aff6324bc1d562610bb2086538b65657c}{}\index{integ@{integ}!trapezoidal\+\_\+2\+D@{trapezoidal\+\_\+2\+D}}
+\index{trapezoidal\+\_\+2\+D@{trapezoidal\+\_\+2\+D}!integ@{integ}}
+\subsubsection[{trapezoidal\+\_\+2\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T integ\+::trapezoidal\+\_\+2\+D (
+\begin{DoxyParamCaption}
+\item[{const std\+::vector$<$ T $>$ \&}]{f, }
+\item[{size\+\_\+t}]{X, }
+\item[{size\+\_\+t}]{Y, }
+\item[{T}]{dx, }
+\item[{T}]{dy}
+\end{DoxyParamCaption}
+)}\label{namespaceinteg_aff6324bc1d562610bb2086538b65657c}
+
+
+
+
+ 
+
+A\+R\+E\+A integral using 2\+D trapezoidal rule the corners of the plane need to be counted once the edges of the plane need to be counted twice everything in the interior needs to be counted four times \hypertarget{namespaceinteg_ae022b7e8292beec746f1b72e0a09484d}{}\index{integ@{integ}!trapezoidal\+\_\+2\+D@{trapezoidal\+\_\+2\+D}}
+\index{trapezoidal\+\_\+2\+D@{trapezoidal\+\_\+2\+D}!integ@{integ}}
+\subsubsection[{trapezoidal\+\_\+2\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T integ\+::trapezoidal\+\_\+2\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{size\+\_\+t}]{X, }
+\item[{size\+\_\+t}]{Y, }
+\item[{T}]{dx, }
+\item[{T}]{dy}
+\end{DoxyParamCaption}
+)}\label{namespaceinteg_ae022b7e8292beec746f1b72e0a09484d}
+\hypertarget{namespaceinteg_a71b791c6163be10049667e5ba5ba7617}{}\index{integ@{integ}!trapezoidal\+\_\+3\+D@{trapezoidal\+\_\+3\+D}}
+\index{trapezoidal\+\_\+3\+D@{trapezoidal\+\_\+3\+D}!integ@{integ}}
+\subsubsection[{trapezoidal\+\_\+3\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T integ\+::trapezoidal\+\_\+3\+D (
+\begin{DoxyParamCaption}
+\item[{const std\+::vector$<$ T $>$ \&}]{f, }
+\item[{size\+\_\+t}]{X, }
+\item[{size\+\_\+t}]{Y, }
+\item[{size\+\_\+t}]{Z, }
+\item[{T}]{dx, }
+\item[{T}]{dy, }
+\item[{T}]{dz}
+\end{DoxyParamCaption}
+)}\label{namespaceinteg_a71b791c6163be10049667e5ba5ba7617}
+
+
+
+
+ 
+
+V\+O\+L\+U\+M\+E integral using 3\+D trapezoidal rule the corners of the cube need to be counted once the edges of the cube need to be counted twice the faces of the cube need to be counted four times everything in the interior needs to be counted eight times \hypertarget{namespaceinteg_adbdbd0ba01246eeb2b0b8659107d58ff}{}\index{integ@{integ}!trapezoidal\+\_\+3\+D@{trapezoidal\+\_\+3\+D}}
+\index{trapezoidal\+\_\+3\+D@{trapezoidal\+\_\+3\+D}!integ@{integ}}
+\subsubsection[{trapezoidal\+\_\+3\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T integ\+::trapezoidal\+\_\+3\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{size\+\_\+t}]{X, }
+\item[{size\+\_\+t}]{Y, }
+\item[{size\+\_\+t}]{Z, }
+\item[{T}]{dx, }
+\item[{T}]{dy, }
+\item[{T}]{dz}
+\end{DoxyParamCaption}
+)}\label{namespaceinteg_adbdbd0ba01246eeb2b0b8659107d58ff}

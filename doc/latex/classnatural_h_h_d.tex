@@ -1,0 +1,148 @@
+\hypertarget{classnatural_h_h_d}{}\section{natural\+H\+H\+D$<$ T $>$ Class Template Reference}
+\label{classnatural_h_h_d}\index{natural\+H\+H\+D$<$ T $>$@{natural\+H\+H\+D$<$ T $>$}}
+
+
+{\ttfamily \#include $<$H\+H\+D.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classnatural_h_h_d_afbad6c810ff25731734a382ab69d91b0}{$\sim$natural\+H\+H\+D} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\hyperlink{classnatural_h_h_d_a44fac2b6a7410bcbdf9bc5bfcf66f0f0}{natural\+H\+H\+D} (const \hyperlink{class_vector_field}{Vector\+Field}$<$ T $>$ \&vfield, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid, unsigned int C\+O\+M\+P\+U\+T\+E\+\_\+\+T\+Y\+P\+E=1)
+\begin{DoxyCompactList}\small\item\em Initialize the \hyperlink{classnatural_h_h_d}{natural\+H\+H\+D}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+T $\ast$ \hyperlink{classnatural_h_h_d_a14be6c70a1d6e7e110d231311bfd9353}{D}
+\item 
+T $\ast$ \hyperlink{classnatural_h_h_d_acf29795e943a83e27809523fe7b2182e}{Ru}
+\item 
+T $\ast$ \hyperlink{classnatural_h_h_d_abcc7900aa4db9c2a48d7cea957f0193d}{Rv}
+\item 
+T $\ast$ \hyperlink{classnatural_h_h_d_a4c5da0a3fb928591bfb286f065ddf735}{Rw}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classnatural_h_h_d_afe3977532508f81d30ce608cc6d92229}{compute\+\_\+2\+D} (const T $\ast$fd, const T $\ast$fr, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em Compute 2\+D potentials. \end{DoxyCompactList}\item 
+void \hyperlink{classnatural_h_h_d_a9b27d51f78326207a25d500d8f6a71bc}{compute\+\_\+3\+D} (const T $\ast$fd, const T $\ast$fru, const T $\ast$frv, const T $\ast$frw, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\begin{DoxyCompactList}\small\item\em Compute 3\+D potentials. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$class natural\+H\+H\+D$<$ T $>$}
+
+\hyperlink{_h_h_d_8h}{H\+H\+D.\+h} Library for computing the potential functions for the natural H\+H\+D.
+\begin{DoxyItemize}
+\item Technical details can be found in the paper doi\+: 10.\+1109/\+T\+V\+C\+G.2014.\+2312012 
+\end{DoxyItemize}
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classnatural_h_h_d_afbad6c810ff25731734a382ab69d91b0}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!````~natural\+H\+H\+D@{$\sim$natural\+H\+H\+D}}
+\index{````~natural\+H\+H\+D@{$\sim$natural\+H\+H\+D}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{$\sim$natural\+H\+H\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf natural\+H\+H\+D}$<$ T $>$\+::$\sim${\bf natural\+H\+H\+D} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{classnatural_h_h_d_afbad6c810ff25731734a382ab69d91b0}
+
+
+Destructor. 
+
+\hypertarget{classnatural_h_h_d_a44fac2b6a7410bcbdf9bc5bfcf66f0f0}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\index{natural\+H\+H\+D@{natural\+H\+H\+D}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{natural\+H\+H\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ {\bf natural\+H\+H\+D}$<$ T $>$\+::{\bf natural\+H\+H\+D} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vector\+Field}$<$ T $>$ \&}]{vfield, }
+\item[{const {\bf R\+Grid} \&}]{rgrid, }
+\item[{unsigned int}]{C\+O\+M\+P\+U\+T\+E\+\_\+\+T\+Y\+P\+E = {\ttfamily 1}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{classnatural_h_h_d_a44fac2b6a7410bcbdf9bc5bfcf66f0f0}
+
+
+Initialize the \hyperlink{classnatural_h_h_d}{natural\+H\+H\+D}. 
+
+Create Green\textquotesingle{}s function for a 2\+D or 3\+D regular grid.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vfield} & Vector field. \\
+\hline
+{\em rgrid} & Reference to the regular grid. \\
+\hline
+{\em C\+O\+M\+P\+U\+T\+E\+\_\+\+T\+Y\+P\+E} & 1 (compute all potentials in a single loop), 2 (compute all potentials in separate loops), 3 (compute all potentials in separate loops using Greens function map) \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classnatural_h_h_d_afe3977532508f81d30ce608cc6d92229}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!compute\+\_\+2\+D@{compute\+\_\+2\+D}}
+\index{compute\+\_\+2\+D@{compute\+\_\+2\+D}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{compute\+\_\+2\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf natural\+H\+H\+D}$<$ T $>$\+::compute\+\_\+2\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{fd, }
+\item[{const T $\ast$}]{fr, }
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}\label{classnatural_h_h_d_afe3977532508f81d30ce608cc6d92229}
+
+
+Compute 2\+D potentials. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fd} & Divergence of the vector field. \\
+\hline
+{\em fr} & Rotation of the vector field. \\
+\hline
+{\em rgrid} & Regular grid. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnatural_h_h_d_a9b27d51f78326207a25d500d8f6a71bc}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!compute\+\_\+3\+D@{compute\+\_\+3\+D}}
+\index{compute\+\_\+3\+D@{compute\+\_\+3\+D}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{compute\+\_\+3\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ void {\bf natural\+H\+H\+D}$<$ T $>$\+::compute\+\_\+3\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{fd, }
+\item[{const T $\ast$}]{fru, }
+\item[{const T $\ast$}]{frv, }
+\item[{const T $\ast$}]{frw, }
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}\label{classnatural_h_h_d_a9b27d51f78326207a25d500d8f6a71bc}
+
+
+Compute 3\+D potentials. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fd} & Divergence of the vector field. \\
+\hline
+{\em fr} & Rotation of the vector field. \\
+\hline
+{\em rgrid} & Regular grid. \\
+\hline
+\end{DoxyParams}
+
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classnatural_h_h_d_a14be6c70a1d6e7e110d231311bfd9353}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!D@{D}}
+\index{D@{D}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ {\bf natural\+H\+H\+D}$<$ T $>$\+::D}\label{classnatural_h_h_d_a14be6c70a1d6e7e110d231311bfd9353}
+Divegence potential \hypertarget{classnatural_h_h_d_acf29795e943a83e27809523fe7b2182e}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!Ru@{Ru}}
+\index{Ru@{Ru}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{Ru}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ {\bf natural\+H\+H\+D}$<$ T $>$\+::Ru}\label{classnatural_h_h_d_acf29795e943a83e27809523fe7b2182e}
+u-\/component of Rotation potential \hypertarget{classnatural_h_h_d_abcc7900aa4db9c2a48d7cea957f0193d}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!Rv@{Rv}}
+\index{Rv@{Rv}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{Rv}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ {\bf natural\+H\+H\+D}$<$ T $>$\+::Rv}\label{classnatural_h_h_d_abcc7900aa4db9c2a48d7cea957f0193d}
+v-\/component of Rotation potential \hypertarget{classnatural_h_h_d_a4c5da0a3fb928591bfb286f065ddf735}{}\index{natural\+H\+H\+D@{natural\+H\+H\+D}!Rw@{Rw}}
+\index{Rw@{Rw}!natural\+H\+H\+D@{natural\+H\+H\+D}}
+\subsubsection[{Rw}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ {\bf natural\+H\+H\+D}$<$ T $>$\+::Rw}\label{classnatural_h_h_d_a4c5da0a3fb928591bfb286f065ddf735}
+w-\/component of Rotation potential 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_h_h_d_8h}{H\+H\+D.\+h}\end{DoxyCompactItemize}

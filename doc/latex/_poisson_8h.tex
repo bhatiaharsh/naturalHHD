@@ -1,0 +1,24 @@
+\hypertarget{_poisson_8h}{}\section{src/\+Poisson.h File Reference}
+\label{_poisson_8h}\index{src/\+Poisson.\+h@{src/\+Poisson.\+h}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\\*
+{\ttfamily \#include $<$math.\+h$>$}\\*
+{\ttfamily \#include $<$time.\+h$>$}\\*
+{\ttfamily \#include \char`\"{}R\+Grid.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Greens\+Function.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}trapezoidal\+Integration.\+h\char`\"{}}\\*
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespace_poisson}{Poisson}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_a28367c6c5e9568c1d031cad62354676d}{Poisson\+::solve\+\_\+\+Poisson\+\_\+2\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid, const \hyperlink{class_green_func}{Green\+Func}$<$ T $>$ \&g\+Func)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_a7c7163908fcf6a2b0444e3ad1b808156}{Poisson\+::solve\+\_\+\+Poisson\+\_\+3\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid, const \hyperlink{class_green_func}{Green\+Func}$<$ T $>$ \&rmap)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_ae5286eed57168b5680b7ae461daa397b}{Poisson\+::solve\+\_\+\+Poisson\+\_\+2\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_a2f8b970787c61714b9a4ef75d5fe799c}{Poisson\+::solve\+\_\+\+Poisson\+\_\+3\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\end{DoxyCompactItemize}

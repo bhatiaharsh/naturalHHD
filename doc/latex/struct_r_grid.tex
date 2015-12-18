@@ -1,0 +1,383 @@
+\hypertarget{struct_r_grid}{}\section{R\+Grid Struct Reference}
+\label{struct_r_grid}\index{R\+Grid@{R\+Grid}}
+
+
+{\ttfamily \#include $<$R\+Grid.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{struct_r_grid_a6aa4cd36e06dbbc4e0672492b5738e61}{R\+Grid} ()
+\begin{DoxyCompactList}\small\item\em default constructor \end{DoxyCompactList}\item 
+\hyperlink{struct_r_grid_a3ad88c5a461228dd08aa2d8b1a3dd846}{R\+Grid} (size\+\_\+t X\+\_\+, float dx\+\_\+)
+\begin{DoxyCompactList}\small\item\em constructor for 1\+D grid \end{DoxyCompactList}\item 
+\hyperlink{struct_r_grid_a5e90c70fb49f11dc057257f3db67548e}{R\+Grid} (size\+\_\+t X\+\_\+, size\+\_\+t Y\+\_\+, float dx\+\_\+, float dy\+\_\+)
+\begin{DoxyCompactList}\small\item\em constructor for 2\+D grid \end{DoxyCompactList}\item 
+\hyperlink{struct_r_grid_a1a85f014601014fe7b0465588ea69b79}{R\+Grid} (size\+\_\+t X\+\_\+, size\+\_\+t Y\+\_\+, size\+\_\+t Z\+\_\+, float dx\+\_\+, float dy\+\_\+, float dz\+\_\+)
+\begin{DoxyCompactList}\small\item\em constructor for 3\+D grid \end{DoxyCompactList}\item 
+void \hyperlink{struct_r_grid_a0111bcb7fde4e8e71f6c5d08a13a2ed6}{get\+\_\+coords} (size\+\_\+t v, size\+\_\+t \&x, size\+\_\+t \&y) const 
+\begin{DoxyCompactList}\small\item\em convert between indices and vertex id \end{DoxyCompactList}\item 
+void \hyperlink{struct_r_grid_a22875fbd6ba3068ec8ccd48b355e2183}{get\+\_\+coords} (size\+\_\+t v, size\+\_\+t \&x, size\+\_\+t \&y, size\+\_\+t \&z) const 
+\begin{DoxyCompactList}\small\item\em convert between indices and vertex id \end{DoxyCompactList}\item 
+size\+\_\+t \hyperlink{struct_r_grid_a906a0794df53258fd129707f5adb1a09}{get\+\_\+idx} (size\+\_\+t x, size\+\_\+t y) const 
+\begin{DoxyCompactList}\small\item\em convert between indices and vertex id \end{DoxyCompactList}\item 
+size\+\_\+t \hyperlink{struct_r_grid_a8ca551941c83ba37e549260a2f4d3a86}{get\+\_\+idx} (size\+\_\+t x, size\+\_\+t y, size\+\_\+t z) const 
+\begin{DoxyCompactList}\small\item\em convert between indices and vertex id \end{DoxyCompactList}\item 
+void \hyperlink{struct_r_grid_aaeedcdbb340eaf106a4792dec3a54d7d}{get\+\_\+nbrs\+\_\+idx\+\_\+2\+D} (size\+\_\+t p, size\+\_\+t \&pxp, size\+\_\+t \&pxm, float \&one\+\_\+over\+\_\+dx\+\_\+, size\+\_\+t \&pyp, size\+\_\+t \&pym, float \&one\+\_\+over\+\_\+dy\+\_\+) const 
+\begin{DoxyCompactList}\small\item\em Get neighbors of a vertex p. \end{DoxyCompactList}\item 
+void \hyperlink{struct_r_grid_add4468ed71d4f02e7702bd90d9255f15}{get\+\_\+nbrs\+\_\+idx\+\_\+3\+D} (size\+\_\+t p, size\+\_\+t \&pxp, size\+\_\+t \&pxm, float \&one\+\_\+over\+\_\+dx\+\_\+, size\+\_\+t \&pyp, size\+\_\+t \&pym, float \&one\+\_\+over\+\_\+dy\+\_\+, size\+\_\+t \&pzp, size\+\_\+t \&pzm, float \&one\+\_\+over\+\_\+dz\+\_\+) const 
+\begin{DoxyCompactList}\small\item\em Get neighbors of a vertex p. \end{DoxyCompactList}\item 
+float \hyperlink{struct_r_grid_a052d3f12e5da64fc5b945b7ec213da03}{get\+\_\+dist\+\_\+sq} (size\+\_\+t v1, size\+\_\+t v2) const 
+\begin{DoxyCompactList}\small\item\em Compute square of the distance on the regular grid. \end{DoxyCompactList}\item 
+float \hyperlink{struct_r_grid_afca6428602e31a08e8ef1b1b2dabfcbc}{get\+\_\+dist} (size\+\_\+t v1, size\+\_\+t v2) const 
+\begin{DoxyCompactList}\small\item\em Compute the distance on the regular grid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \hyperlink{struct_r_grid_a7b2de275d56e211269b9b648a3f4d913}{dim}
+\item 
+size\+\_\+t \hyperlink{struct_r_grid_ab50f43bfbd55e4ad265ca7d90395b0fa}{sz}
+\item 
+size\+\_\+t \hyperlink{struct_r_grid_a0d0c563000e5e25df807dd22e838043c}{X}
+\item 
+size\+\_\+t \hyperlink{struct_r_grid_aa24f14994d1fbd47f8dabf85c6364143}{Y}
+\item 
+size\+\_\+t \hyperlink{struct_r_grid_aa5276511c713a4fb0c4145af7ac321d0}{Z}
+\item 
+float \hyperlink{struct_r_grid_a3e28ca78f21ea577c9d5fceac47c3f0f}{dx}
+\item 
+float \hyperlink{struct_r_grid_a031239faf877acea3fcd18e687bfd9f3}{dy}
+\item 
+float \hyperlink{struct_r_grid_ab329ff4fc41070804a9aa9d5a7792ba4}{dz}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{struct_r_grid_a00eb36a95486d6ef44140d5cd55e9613}{init} ()
+\begin{DoxyCompactList}\small\item\em initialize the grid \end{DoxyCompactList}\item 
+void \hyperlink{struct_r_grid_ac826111379bf58202fe1db2efec84f6d}{init\+\_\+local} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{struct_r_grid_a7f46d3d8d93a39f55cba18aa7d910b15}{get\+\_\+nbrs} (size\+\_\+t X\+\_\+, float one\+\_\+over\+\_\+dx\+\_\+, size\+\_\+t x, size\+\_\+t \&xm, size\+\_\+t \&xp, float \&dx\+\_\+)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+size\+\_\+t \hyperlink{struct_r_grid_a8ec9d66818138ba0e28bc295ab384ab5}{X\+Y}
+\item 
+float \hyperlink{struct_r_grid_aa1ade7bc5ca61771ee2c7cb83dfed3d4}{sq\+\_\+dx}
+\item 
+float \hyperlink{struct_r_grid_afc3c667b48b46db53fc4e5a1cc4fbcb5}{sq\+\_\+dy}
+\item 
+float \hyperlink{struct_r_grid_afb409abf02548dda7d8d37b86aac58c4}{sq\+\_\+dz}
+\item 
+float \hyperlink{struct_r_grid_ae71fcd470c92cb10118c1984f9eb17a9}{one\+\_\+over\+\_\+dx}
+\item 
+float \hyperlink{struct_r_grid_a0940315e4e956b2dc8b58ed0cc705067}{one\+\_\+over\+\_\+dy}
+\item 
+float \hyperlink{struct_r_grid_a707d7e042c450a3d7bc4d72412d909bc}{one\+\_\+over\+\_\+dz}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+ \hyperlink{_r_grid_8h}{R\+Grid.\+h} This file contains a structure to represent regular grids. This has centralized functionalities to obtain neighbors etc. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{struct_r_grid_a6aa4cd36e06dbbc4e0672492b5738e61}{}\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\subsubsection[{R\+Grid}]{\setlength{\rightskip}{0pt plus 5cm}R\+Grid\+::\+R\+Grid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a6aa4cd36e06dbbc4e0672492b5738e61}
+
+
+default constructor 
+
+\hypertarget{struct_r_grid_a3ad88c5a461228dd08aa2d8b1a3dd846}{}\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\subsubsection[{R\+Grid}]{\setlength{\rightskip}{0pt plus 5cm}R\+Grid\+::\+R\+Grid (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{X\+\_\+, }
+\item[{float}]{dx\+\_\+}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a3ad88c5a461228dd08aa2d8b1a3dd846}
+
+
+constructor for 1\+D grid 
+
+\hypertarget{struct_r_grid_a5e90c70fb49f11dc057257f3db67548e}{}\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\subsubsection[{R\+Grid}]{\setlength{\rightskip}{0pt plus 5cm}R\+Grid\+::\+R\+Grid (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{X\+\_\+, }
+\item[{size\+\_\+t}]{Y\+\_\+, }
+\item[{float}]{dx\+\_\+, }
+\item[{float}]{dy\+\_\+}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a5e90c70fb49f11dc057257f3db67548e}
+
+
+constructor for 2\+D grid 
+
+\hypertarget{struct_r_grid_a1a85f014601014fe7b0465588ea69b79}{}\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\index{R\+Grid@{R\+Grid}!R\+Grid@{R\+Grid}}
+\subsubsection[{R\+Grid}]{\setlength{\rightskip}{0pt plus 5cm}R\+Grid\+::\+R\+Grid (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{X\+\_\+, }
+\item[{size\+\_\+t}]{Y\+\_\+, }
+\item[{size\+\_\+t}]{Z\+\_\+, }
+\item[{float}]{dx\+\_\+, }
+\item[{float}]{dy\+\_\+, }
+\item[{float}]{dz\+\_\+}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a1a85f014601014fe7b0465588ea69b79}
+
+
+constructor for 3\+D grid 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{struct_r_grid_a0111bcb7fde4e8e71f6c5d08a13a2ed6}{}\index{R\+Grid@{R\+Grid}!get\+\_\+coords@{get\+\_\+coords}}
+\index{get\+\_\+coords@{get\+\_\+coords}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+coords}]{\setlength{\rightskip}{0pt plus 5cm}void R\+Grid\+::get\+\_\+coords (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{v, }
+\item[{size\+\_\+t \&}]{x, }
+\item[{size\+\_\+t \&}]{y}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a0111bcb7fde4e8e71f6c5d08a13a2ed6}
+
+
+convert between indices and vertex id 
+
+\hypertarget{struct_r_grid_a22875fbd6ba3068ec8ccd48b355e2183}{}\index{R\+Grid@{R\+Grid}!get\+\_\+coords@{get\+\_\+coords}}
+\index{get\+\_\+coords@{get\+\_\+coords}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+coords}]{\setlength{\rightskip}{0pt plus 5cm}void R\+Grid\+::get\+\_\+coords (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{v, }
+\item[{size\+\_\+t \&}]{x, }
+\item[{size\+\_\+t \&}]{y, }
+\item[{size\+\_\+t \&}]{z}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a22875fbd6ba3068ec8ccd48b355e2183}
+
+
+convert between indices and vertex id 
+
+\hypertarget{struct_r_grid_afca6428602e31a08e8ef1b1b2dabfcbc}{}\index{R\+Grid@{R\+Grid}!get\+\_\+dist@{get\+\_\+dist}}
+\index{get\+\_\+dist@{get\+\_\+dist}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+dist}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::get\+\_\+dist (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{v1, }
+\item[{size\+\_\+t}]{v2}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_afca6428602e31a08e8ef1b1b2dabfcbc}
+
+
+Compute the distance on the regular grid. 
+
+\hypertarget{struct_r_grid_a052d3f12e5da64fc5b945b7ec213da03}{}\index{R\+Grid@{R\+Grid}!get\+\_\+dist\+\_\+sq@{get\+\_\+dist\+\_\+sq}}
+\index{get\+\_\+dist\+\_\+sq@{get\+\_\+dist\+\_\+sq}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+dist\+\_\+sq}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::get\+\_\+dist\+\_\+sq (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{v1, }
+\item[{size\+\_\+t}]{v2}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a052d3f12e5da64fc5b945b7ec213da03}
+
+
+Compute square of the distance on the regular grid. 
+
+\hypertarget{struct_r_grid_a906a0794df53258fd129707f5adb1a09}{}\index{R\+Grid@{R\+Grid}!get\+\_\+idx@{get\+\_\+idx}}
+\index{get\+\_\+idx@{get\+\_\+idx}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+idx}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::get\+\_\+idx (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{x, }
+\item[{size\+\_\+t}]{y}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a906a0794df53258fd129707f5adb1a09}
+
+
+convert between indices and vertex id 
+
+\hypertarget{struct_r_grid_a8ca551941c83ba37e549260a2f4d3a86}{}\index{R\+Grid@{R\+Grid}!get\+\_\+idx@{get\+\_\+idx}}
+\index{get\+\_\+idx@{get\+\_\+idx}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+idx}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::get\+\_\+idx (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{x, }
+\item[{size\+\_\+t}]{y, }
+\item[{size\+\_\+t}]{z}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_a8ca551941c83ba37e549260a2f4d3a86}
+
+
+convert between indices and vertex id 
+
+\hypertarget{struct_r_grid_a7f46d3d8d93a39f55cba18aa7d910b15}{}\index{R\+Grid@{R\+Grid}!get\+\_\+nbrs@{get\+\_\+nbrs}}
+\index{get\+\_\+nbrs@{get\+\_\+nbrs}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+nbrs}]{\setlength{\rightskip}{0pt plus 5cm}static void R\+Grid\+::get\+\_\+nbrs (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{X\+\_\+, }
+\item[{float}]{one\+\_\+over\+\_\+dx\+\_\+, }
+\item[{size\+\_\+t}]{x, }
+\item[{size\+\_\+t \&}]{xm, }
+\item[{size\+\_\+t \&}]{xp, }
+\item[{float \&}]{dx\+\_\+}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}, {\ttfamily [private]}}\label{struct_r_grid_a7f46d3d8d93a39f55cba18aa7d910b15}
+\hypertarget{struct_r_grid_aaeedcdbb340eaf106a4792dec3a54d7d}{}\index{R\+Grid@{R\+Grid}!get\+\_\+nbrs\+\_\+idx\+\_\+2\+D@{get\+\_\+nbrs\+\_\+idx\+\_\+2\+D}}
+\index{get\+\_\+nbrs\+\_\+idx\+\_\+2\+D@{get\+\_\+nbrs\+\_\+idx\+\_\+2\+D}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+nbrs\+\_\+idx\+\_\+2\+D}]{\setlength{\rightskip}{0pt plus 5cm}void R\+Grid\+::get\+\_\+nbrs\+\_\+idx\+\_\+2\+D (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{p, }
+\item[{size\+\_\+t \&}]{pxp, }
+\item[{size\+\_\+t \&}]{pxm, }
+\item[{float \&}]{one\+\_\+over\+\_\+dx\+\_\+, }
+\item[{size\+\_\+t \&}]{pyp, }
+\item[{size\+\_\+t \&}]{pym, }
+\item[{float \&}]{one\+\_\+over\+\_\+dy\+\_\+}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_aaeedcdbb340eaf106a4792dec3a54d7d}
+
+
+Get neighbors of a vertex p. 
+
+
+
+ get neighbors of a vertex p pxp, pxm are x-\/neighbors to the right (plus) and left (minus) and so on for y and z dimensions
+\begin{DoxyParams}{Parameters}
+{\em p} & is the input point \\
+\hline
+{\em pxp} & is the x-\/neighbor to the right (plus) \\
+\hline
+{\em pxm} & is the x-\/neighbor to the left (minus) \\
+\hline
+{\em pyp} & is the y-\/neighbor to the right (plus) \\
+\hline
+{\em pym} & is the y-\/neighbor to the left (minus) \\
+\hline
+{\em one\+\_\+over\+\_\+dx\+\_\+} & is the reciprocal of the dx corresponding to this neighbor \\
+\hline
+{\em one\+\_\+over\+\_\+dy\+\_\+} & is the reciprocal of the dy corresponding to this neighbor \\
+\hline
+\end{DoxyParams}
+\hypertarget{struct_r_grid_add4468ed71d4f02e7702bd90d9255f15}{}\index{R\+Grid@{R\+Grid}!get\+\_\+nbrs\+\_\+idx\+\_\+3\+D@{get\+\_\+nbrs\+\_\+idx\+\_\+3\+D}}
+\index{get\+\_\+nbrs\+\_\+idx\+\_\+3\+D@{get\+\_\+nbrs\+\_\+idx\+\_\+3\+D}!R\+Grid@{R\+Grid}}
+\subsubsection[{get\+\_\+nbrs\+\_\+idx\+\_\+3\+D}]{\setlength{\rightskip}{0pt plus 5cm}void R\+Grid\+::get\+\_\+nbrs\+\_\+idx\+\_\+3\+D (
+\begin{DoxyParamCaption}
+\item[{size\+\_\+t}]{p, }
+\item[{size\+\_\+t \&}]{pxp, }
+\item[{size\+\_\+t \&}]{pxm, }
+\item[{float \&}]{one\+\_\+over\+\_\+dx\+\_\+, }
+\item[{size\+\_\+t \&}]{pyp, }
+\item[{size\+\_\+t \&}]{pym, }
+\item[{float \&}]{one\+\_\+over\+\_\+dy\+\_\+, }
+\item[{size\+\_\+t \&}]{pzp, }
+\item[{size\+\_\+t \&}]{pzm, }
+\item[{float \&}]{one\+\_\+over\+\_\+dz\+\_\+}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\label{struct_r_grid_add4468ed71d4f02e7702bd90d9255f15}
+
+
+Get neighbors of a vertex p. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & is the input point \\
+\hline
+{\em pxp} & is the x-\/neighbor to the right (plus) \\
+\hline
+{\em pxm} & is the x-\/neighbor to the left (minus) \\
+\hline
+{\em pyp} & is the y-\/neighbor to the right (plus) \\
+\hline
+{\em pym} & is the y-\/neighbor to the left (minus) \\
+\hline
+{\em pzp} & is the z-\/neighbor to the right (plus) \\
+\hline
+{\em pzm} & is the z-\/neighbor to the left (minus) \\
+\hline
+{\em one\+\_\+over\+\_\+dx\+\_\+} & is the reciprocal of the dx corresponding to this neighbor \\
+\hline
+{\em one\+\_\+over\+\_\+dx\+\_\+} & is the reciprocal of the dx corresponding to this neighbor \\
+\hline
+{\em one\+\_\+over\+\_\+dz\+\_\+} & is the reciprocal of the dz corresponding to this neighbor \\
+\hline
+\end{DoxyParams}
+\hypertarget{struct_r_grid_a00eb36a95486d6ef44140d5cd55e9613}{}\index{R\+Grid@{R\+Grid}!init@{init}}
+\index{init@{init}!R\+Grid@{R\+Grid}}
+\subsubsection[{init}]{\setlength{\rightskip}{0pt plus 5cm}void R\+Grid\+::init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}\label{struct_r_grid_a00eb36a95486d6ef44140d5cd55e9613}
+
+
+initialize the grid 
+
+\hypertarget{struct_r_grid_ac826111379bf58202fe1db2efec84f6d}{}\index{R\+Grid@{R\+Grid}!init\+\_\+local@{init\+\_\+local}}
+\index{init\+\_\+local@{init\+\_\+local}!R\+Grid@{R\+Grid}}
+\subsubsection[{init\+\_\+local}]{\setlength{\rightskip}{0pt plus 5cm}void R\+Grid\+::init\+\_\+local (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}\label{struct_r_grid_ac826111379bf58202fe1db2efec84f6d}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{struct_r_grid_a7b2de275d56e211269b9b648a3f4d913}{}\index{R\+Grid@{R\+Grid}!dim@{dim}}
+\index{dim@{dim}!R\+Grid@{R\+Grid}}
+\subsubsection[{dim}]{\setlength{\rightskip}{0pt plus 5cm}uint8\+\_\+t R\+Grid\+::dim}\label{struct_r_grid_a7b2de275d56e211269b9b648a3f4d913}
+2\+D or 3\+D \hypertarget{struct_r_grid_a3e28ca78f21ea577c9d5fceac47c3f0f}{}\index{R\+Grid@{R\+Grid}!dx@{dx}}
+\index{dx@{dx}!R\+Grid@{R\+Grid}}
+\subsubsection[{dx}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::dx}\label{struct_r_grid_a3e28ca78f21ea577c9d5fceac47c3f0f}
+\hypertarget{struct_r_grid_a031239faf877acea3fcd18e687bfd9f3}{}\index{R\+Grid@{R\+Grid}!dy@{dy}}
+\index{dy@{dy}!R\+Grid@{R\+Grid}}
+\subsubsection[{dy}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::dy}\label{struct_r_grid_a031239faf877acea3fcd18e687bfd9f3}
+\hypertarget{struct_r_grid_ab329ff4fc41070804a9aa9d5a7792ba4}{}\index{R\+Grid@{R\+Grid}!dz@{dz}}
+\index{dz@{dz}!R\+Grid@{R\+Grid}}
+\subsubsection[{dz}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::dz}\label{struct_r_grid_ab329ff4fc41070804a9aa9d5a7792ba4}
+\hypertarget{struct_r_grid_ae71fcd470c92cb10118c1984f9eb17a9}{}\index{R\+Grid@{R\+Grid}!one\+\_\+over\+\_\+dx@{one\+\_\+over\+\_\+dx}}
+\index{one\+\_\+over\+\_\+dx@{one\+\_\+over\+\_\+dx}!R\+Grid@{R\+Grid}}
+\subsubsection[{one\+\_\+over\+\_\+dx}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::one\+\_\+over\+\_\+dx\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_ae71fcd470c92cb10118c1984f9eb17a9}
+\hypertarget{struct_r_grid_a0940315e4e956b2dc8b58ed0cc705067}{}\index{R\+Grid@{R\+Grid}!one\+\_\+over\+\_\+dy@{one\+\_\+over\+\_\+dy}}
+\index{one\+\_\+over\+\_\+dy@{one\+\_\+over\+\_\+dy}!R\+Grid@{R\+Grid}}
+\subsubsection[{one\+\_\+over\+\_\+dy}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::one\+\_\+over\+\_\+dy\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_a0940315e4e956b2dc8b58ed0cc705067}
+\hypertarget{struct_r_grid_a707d7e042c450a3d7bc4d72412d909bc}{}\index{R\+Grid@{R\+Grid}!one\+\_\+over\+\_\+dz@{one\+\_\+over\+\_\+dz}}
+\index{one\+\_\+over\+\_\+dz@{one\+\_\+over\+\_\+dz}!R\+Grid@{R\+Grid}}
+\subsubsection[{one\+\_\+over\+\_\+dz}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::one\+\_\+over\+\_\+dz\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_a707d7e042c450a3d7bc4d72412d909bc}
+\hypertarget{struct_r_grid_aa1ade7bc5ca61771ee2c7cb83dfed3d4}{}\index{R\+Grid@{R\+Grid}!sq\+\_\+dx@{sq\+\_\+dx}}
+\index{sq\+\_\+dx@{sq\+\_\+dx}!R\+Grid@{R\+Grid}}
+\subsubsection[{sq\+\_\+dx}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::sq\+\_\+dx\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_aa1ade7bc5ca61771ee2c7cb83dfed3d4}
+\hypertarget{struct_r_grid_afc3c667b48b46db53fc4e5a1cc4fbcb5}{}\index{R\+Grid@{R\+Grid}!sq\+\_\+dy@{sq\+\_\+dy}}
+\index{sq\+\_\+dy@{sq\+\_\+dy}!R\+Grid@{R\+Grid}}
+\subsubsection[{sq\+\_\+dy}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::sq\+\_\+dy\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_afc3c667b48b46db53fc4e5a1cc4fbcb5}
+\hypertarget{struct_r_grid_afb409abf02548dda7d8d37b86aac58c4}{}\index{R\+Grid@{R\+Grid}!sq\+\_\+dz@{sq\+\_\+dz}}
+\index{sq\+\_\+dz@{sq\+\_\+dz}!R\+Grid@{R\+Grid}}
+\subsubsection[{sq\+\_\+dz}]{\setlength{\rightskip}{0pt plus 5cm}float R\+Grid\+::sq\+\_\+dz\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_afb409abf02548dda7d8d37b86aac58c4}
+\hypertarget{struct_r_grid_ab50f43bfbd55e4ad265ca7d90395b0fa}{}\index{R\+Grid@{R\+Grid}!sz@{sz}}
+\index{sz@{sz}!R\+Grid@{R\+Grid}}
+\subsubsection[{sz}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::sz}\label{struct_r_grid_ab50f43bfbd55e4ad265ca7d90395b0fa}
+size of the grid \hypertarget{struct_r_grid_a0d0c563000e5e25df807dd22e838043c}{}\index{R\+Grid@{R\+Grid}!X@{X}}
+\index{X@{X}!R\+Grid@{R\+Grid}}
+\subsubsection[{X}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::\+X}\label{struct_r_grid_a0d0c563000e5e25df807dd22e838043c}
+\hypertarget{struct_r_grid_a8ec9d66818138ba0e28bc295ab384ab5}{}\index{R\+Grid@{R\+Grid}!X\+Y@{X\+Y}}
+\index{X\+Y@{X\+Y}!R\+Grid@{R\+Grid}}
+\subsubsection[{X\+Y}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::\+X\+Y\hspace{0.3cm}{\ttfamily [private]}}\label{struct_r_grid_a8ec9d66818138ba0e28bc295ab384ab5}
+\hypertarget{struct_r_grid_aa24f14994d1fbd47f8dabf85c6364143}{}\index{R\+Grid@{R\+Grid}!Y@{Y}}
+\index{Y@{Y}!R\+Grid@{R\+Grid}}
+\subsubsection[{Y}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::\+Y}\label{struct_r_grid_aa24f14994d1fbd47f8dabf85c6364143}
+\hypertarget{struct_r_grid_aa5276511c713a4fb0c4145af7ac321d0}{}\index{R\+Grid@{R\+Grid}!Z@{Z}}
+\index{Z@{Z}!R\+Grid@{R\+Grid}}
+\subsubsection[{Z}]{\setlength{\rightskip}{0pt plus 5cm}size\+\_\+t R\+Grid\+::\+Z}\label{struct_r_grid_aa5276511c713a4fb0c4145af7ac321d0}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_r_grid_8h}{R\+Grid.\+h}\end{DoxyCompactItemize}

@@ -1,0 +1,103 @@
+\hypertarget{namespace_poisson}{}\section{Poisson Namespace Reference}
+\label{namespace_poisson}\index{Poisson@{Poisson}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_a28367c6c5e9568c1d031cad62354676d}{solve\+\_\+\+Poisson\+\_\+2\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid, const \hyperlink{class_green_func}{Green\+Func}$<$ T $>$ \&g\+Func)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_a7c7163908fcf6a2b0444e3ad1b808156}{solve\+\_\+\+Poisson\+\_\+3\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid, const \hyperlink{class_green_func}{Green\+Func}$<$ T $>$ \&rmap)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_ae5286eed57168b5680b7ae461daa397b}{solve\+\_\+\+Poisson\+\_\+2\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\item 
+{\footnotesize template$<$typename T $>$ }\\T $\ast$ \hyperlink{namespace_poisson_a2f8b970787c61714b9a4ef75d5fe799c}{solve\+\_\+\+Poisson\+\_\+3\+D} (const T $\ast$f, const \hyperlink{struct_r_grid}{R\+Grid} \&rgrid)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+ \hyperlink{_poisson_8h}{Poisson.\+h} Library for solving the \hyperlink{namespace_poisson}{Poisson} equation using integral solution.
+\begin{DoxyItemize}
+\item Technical details can be found in the paper doi\+: 10.\+1109/\+T\+V\+C\+G.2014.\+2312012
+\end{DoxyItemize}
+
+Author\+: Harsh Bhatia. \href{mailto:bhatia4@llnl.govfunctions}{\tt bhatia4@llnl.\+govfunctions} for solving 2\+D and 3\+D \hyperlink{namespace_poisson}{Poisson} equation on a regular grid f is called the source function that creates a potential (R\+H\+S) phi is the potential function (L\+H\+S) 
+
+\subsection{Function Documentation}
+\hypertarget{namespace_poisson_a28367c6c5e9568c1d031cad62354676d}{}\index{Poisson@{Poisson}!solve\+\_\+\+Poisson\+\_\+2\+D@{solve\+\_\+\+Poisson\+\_\+2\+D}}
+\index{solve\+\_\+\+Poisson\+\_\+2\+D@{solve\+\_\+\+Poisson\+\_\+2\+D}!Poisson@{Poisson}}
+\subsubsection[{solve\+\_\+\+Poisson\+\_\+2\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ Poisson\+::solve\+\_\+\+Poisson\+\_\+2\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{const {\bf R\+Grid} \&}]{rgrid, }
+\item[{const {\bf Green\+Func}$<$ T $>$ \&}]{g\+Func}
+\end{DoxyParamCaption}
+)}\label{namespace_poisson_a28367c6c5e9568c1d031cad62354676d}
+
+
+ ----- serial implementation! I use a map that computes the Green\textquotesingle{}s function only once, and uses it for solving all equations output and temporary memory 
+
+ compute at v0
+
+populate the temporary field for the entire grid!
+
+integrate \hypertarget{namespace_poisson_ae5286eed57168b5680b7ae461daa397b}{}\index{Poisson@{Poisson}!solve\+\_\+\+Poisson\+\_\+2\+D@{solve\+\_\+\+Poisson\+\_\+2\+D}}
+\index{solve\+\_\+\+Poisson\+\_\+2\+D@{solve\+\_\+\+Poisson\+\_\+2\+D}!Poisson@{Poisson}}
+\subsubsection[{solve\+\_\+\+Poisson\+\_\+2\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ Poisson\+::solve\+\_\+\+Poisson\+\_\+2\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)}\label{namespace_poisson_ae5286eed57168b5680b7ae461daa397b}
+
+
+ ----- serial implementation! compute the Green\textquotesingle{}s function on the fly too many computations of log and sqrt! 
+
+ the 2\+D Green\textquotesingle{}s function is -\/--- 1/(2pi) log( dist(x,x\+\_\+0) )
+
+instead, I use ------------ 1/(4pi) log( dist$^\wedge$2(x,x\+\_\+0) )
+
+output and temporary memory 
+
+ compute at v0
+
+populate the temporary field for the entire grid!
+
+don\textquotesingle{}t want to compute log (0)
+
+integrate \hypertarget{namespace_poisson_a7c7163908fcf6a2b0444e3ad1b808156}{}\index{Poisson@{Poisson}!solve\+\_\+\+Poisson\+\_\+3\+D@{solve\+\_\+\+Poisson\+\_\+3\+D}}
+\index{solve\+\_\+\+Poisson\+\_\+3\+D@{solve\+\_\+\+Poisson\+\_\+3\+D}!Poisson@{Poisson}}
+\subsubsection[{solve\+\_\+\+Poisson\+\_\+3\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ Poisson\+::solve\+\_\+\+Poisson\+\_\+3\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{const {\bf R\+Grid} \&}]{rgrid, }
+\item[{const {\bf Green\+Func}$<$ T $>$ \&}]{rmap}
+\end{DoxyParamCaption}
+)}\label{namespace_poisson_a7c7163908fcf6a2b0444e3ad1b808156}
+output and temporary memory 
+
+ compute at v0
+
+populate the temporary field for the entire grid!
+
+integrate \hypertarget{namespace_poisson_a2f8b970787c61714b9a4ef75d5fe799c}{}\index{Poisson@{Poisson}!solve\+\_\+\+Poisson\+\_\+3\+D@{solve\+\_\+\+Poisson\+\_\+3\+D}}
+\index{solve\+\_\+\+Poisson\+\_\+3\+D@{solve\+\_\+\+Poisson\+\_\+3\+D}!Poisson@{Poisson}}
+\subsubsection[{solve\+\_\+\+Poisson\+\_\+3\+D}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ T$\ast$ Poisson\+::solve\+\_\+\+Poisson\+\_\+3\+D (
+\begin{DoxyParamCaption}
+\item[{const T $\ast$}]{f, }
+\item[{const {\bf R\+Grid} \&}]{rgrid}
+\end{DoxyParamCaption}
+)}\label{namespace_poisson_a2f8b970787c61714b9a4ef75d5fe799c}
+
+
+ the 3\+D Green\textquotesingle{}s function is -\/--- 1/(4pi) dist(x,x\+\_\+0)
+
+output and temporary memory 
+
+ compute at v0
+
+populate the temporary field for the entire grid!
+
+don\textquotesingle{}t want to compute 1 / 0
+
+integrate 

@@ -1,0 +1,95 @@
+\hypertarget{_vector_field_8h}{}\section{src/\+Vector\+Field.h File Reference}
+\label{_vector_field_8h}\index{src/\+Vector\+Field.\+h@{src/\+Vector\+Field.\+h}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$algorithm$>$}\\*
+{\ttfamily \#include \char`\"{}R\+W.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}R\+Grid.\+h\char`\"{}}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_vector_field}{Vector\+Field$<$ T $>$}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{_vector_field_8h_a38c3f8844e3c4b0573fbe12772cbbf5e}{minv}(a,  n)~$\ast$std\+::min\+\_\+element(a, a+n)
+\item 
+\#define \hyperlink{_vector_field_8h_a73b658c80c877b95f957692dde065016}{maxv}(a,  n)~$\ast$std\+::max\+\_\+element(a, a+n)
+\item 
+\#define \hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(vp,  vm,  one\+\_\+over\+\_\+dx)~((vp-\/vm)$\ast$one\+\_\+over\+\_\+dx)
+\item 
+\#define \hyperlink{_vector_field_8h_a8e1f47f1132a894b3904a62ca1919175}{divg2\+D}(uxp,  uxm,  one\+\_\+over\+\_\+dx,  vyp,  vym,  one\+\_\+over\+\_\+dy)~(\hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(uxp,uxm,one\+\_\+over\+\_\+dx) + \hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(vyp,vym,one\+\_\+over\+\_\+dy))
+\item 
+\#define \hyperlink{_vector_field_8h_a10015a046f0c7d913cd4fa210c54f076}{divg3\+D}(uxp,  uxm,  one\+\_\+over\+\_\+dx,  vyp,  vym,  one\+\_\+over\+\_\+dy,  vzp,  vzm,  one\+\_\+over\+\_\+dz)~(\hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(uxp,uxm,one\+\_\+over\+\_\+dx) + \hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(vyp,vym,one\+\_\+over\+\_\+dy) + \hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(vzp,vzm,one\+\_\+over\+\_\+dz))
+\item 
+\#define \hyperlink{_vector_field_8h_a4a024e2222d706616808991580efdedf}{rot2\+D}(vxp,  vxm,  one\+\_\+over\+\_\+dx,  uyp,  uym,  one\+\_\+over\+\_\+dy)~(\hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(vxp,vxm,one\+\_\+over\+\_\+dx) -\/ \hyperlink{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{dvdx}(uyp,uym,one\+\_\+over\+\_\+dy))
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{_vector_field_8h_a8e1f47f1132a894b3904a62ca1919175}{}\index{Vector\+Field.\+h@{Vector\+Field.\+h}!divg2\+D@{divg2\+D}}
+\index{divg2\+D@{divg2\+D}!Vector\+Field.\+h@{Vector\+Field.\+h}}
+\subsubsection[{divg2\+D}]{\setlength{\rightskip}{0pt plus 5cm}\#define divg2\+D(
+\begin{DoxyParamCaption}
+\item[{}]{uxp, }
+\item[{}]{uxm, }
+\item[{}]{one\+\_\+over\+\_\+dx, }
+\item[{}]{vyp, }
+\item[{}]{vym, }
+\item[{}]{one\+\_\+over\+\_\+dy}
+\end{DoxyParamCaption}
+)~({\bf dvdx}(uxp,uxm,one\+\_\+over\+\_\+dx) + {\bf dvdx}(vyp,vym,one\+\_\+over\+\_\+dy))}\label{_vector_field_8h_a8e1f47f1132a894b3904a62ca1919175}
+\hypertarget{_vector_field_8h_a10015a046f0c7d913cd4fa210c54f076}{}\index{Vector\+Field.\+h@{Vector\+Field.\+h}!divg3\+D@{divg3\+D}}
+\index{divg3\+D@{divg3\+D}!Vector\+Field.\+h@{Vector\+Field.\+h}}
+\subsubsection[{divg3\+D}]{\setlength{\rightskip}{0pt plus 5cm}\#define divg3\+D(
+\begin{DoxyParamCaption}
+\item[{}]{uxp, }
+\item[{}]{uxm, }
+\item[{}]{one\+\_\+over\+\_\+dx, }
+\item[{}]{vyp, }
+\item[{}]{vym, }
+\item[{}]{one\+\_\+over\+\_\+dy, }
+\item[{}]{vzp, }
+\item[{}]{vzm, }
+\item[{}]{one\+\_\+over\+\_\+dz}
+\end{DoxyParamCaption}
+)~({\bf dvdx}(uxp,uxm,one\+\_\+over\+\_\+dx) + {\bf dvdx}(vyp,vym,one\+\_\+over\+\_\+dy) + {\bf dvdx}(vzp,vzm,one\+\_\+over\+\_\+dz))}\label{_vector_field_8h_a10015a046f0c7d913cd4fa210c54f076}
+\hypertarget{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}{}\index{Vector\+Field.\+h@{Vector\+Field.\+h}!dvdx@{dvdx}}
+\index{dvdx@{dvdx}!Vector\+Field.\+h@{Vector\+Field.\+h}}
+\subsubsection[{dvdx}]{\setlength{\rightskip}{0pt plus 5cm}\#define dvdx(
+\begin{DoxyParamCaption}
+\item[{}]{vp, }
+\item[{}]{vm, }
+\item[{}]{one\+\_\+over\+\_\+dx}
+\end{DoxyParamCaption}
+)~((vp-\/vm)$\ast$one\+\_\+over\+\_\+dx)}\label{_vector_field_8h_aed6115160489c18038334c0b38cc6b05}
+\hypertarget{_vector_field_8h_a73b658c80c877b95f957692dde065016}{}\index{Vector\+Field.\+h@{Vector\+Field.\+h}!maxv@{maxv}}
+\index{maxv@{maxv}!Vector\+Field.\+h@{Vector\+Field.\+h}}
+\subsubsection[{maxv}]{\setlength{\rightskip}{0pt plus 5cm}\#define maxv(
+\begin{DoxyParamCaption}
+\item[{}]{a, }
+\item[{}]{n}
+\end{DoxyParamCaption}
+)~$\ast$std\+::max\+\_\+element(a, a+n)}\label{_vector_field_8h_a73b658c80c877b95f957692dde065016}
+\hypertarget{_vector_field_8h_a38c3f8844e3c4b0573fbe12772cbbf5e}{}\index{Vector\+Field.\+h@{Vector\+Field.\+h}!minv@{minv}}
+\index{minv@{minv}!Vector\+Field.\+h@{Vector\+Field.\+h}}
+\subsubsection[{minv}]{\setlength{\rightskip}{0pt plus 5cm}\#define minv(
+\begin{DoxyParamCaption}
+\item[{}]{a, }
+\item[{}]{n}
+\end{DoxyParamCaption}
+)~$\ast$std\+::min\+\_\+element(a, a+n)}\label{_vector_field_8h_a38c3f8844e3c4b0573fbe12772cbbf5e}
+============================================================= M\+A\+C\+R\+O\+S for fundamental functionalities \hypertarget{_vector_field_8h_a4a024e2222d706616808991580efdedf}{}\index{Vector\+Field.\+h@{Vector\+Field.\+h}!rot2\+D@{rot2\+D}}
+\index{rot2\+D@{rot2\+D}!Vector\+Field.\+h@{Vector\+Field.\+h}}
+\subsubsection[{rot2\+D}]{\setlength{\rightskip}{0pt plus 5cm}\#define rot2\+D(
+\begin{DoxyParamCaption}
+\item[{}]{vxp, }
+\item[{}]{vxm, }
+\item[{}]{one\+\_\+over\+\_\+dx, }
+\item[{}]{uyp, }
+\item[{}]{uym, }
+\item[{}]{one\+\_\+over\+\_\+dy}
+\end{DoxyParamCaption}
+)~({\bf dvdx}(vxp,vxm,one\+\_\+over\+\_\+dx) -\/ {\bf dvdx}(uyp,uym,one\+\_\+over\+\_\+dy))}\label{_vector_field_8h_a4a024e2222d706616808991580efdedf}
