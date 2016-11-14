@@ -491,7 +491,7 @@ public:
 
             for(size_t i = 0; i < sz; i++){
                 u[i] = vf.u[i] - d.u[i] - r.u[i];
-                v[i] = vf.v[i] - d.v[i] - d.v[i];
+                v[i] = vf.v[i] - d.v[i] - r.v[i];
             }
         }
 

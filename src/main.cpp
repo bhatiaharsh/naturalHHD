@@ -63,7 +63,7 @@ int main (int argc, char* argv[]){
         rgrid = RGrid(atoi(argv[2]), atoi(argv[4]), atoi(argv[6]), atof(argv[3]), atof(argv[5]), atof(argv[7]));
     }
     else {
-        printf(" Usage: %s <vfield_filename> <X> <dx> <Y> <dz> [Z] [dz]\n", argv[0]);
+        printf(" Usage: %s <vfield_filename> <X> <dx> <Y> <dy> [Z] [dz]\n", argv[0]);
         exit(1);
     }
 
