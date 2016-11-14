@@ -5,6 +5,9 @@
 
 A C++ library to compute the natural HHD. For details, please see the aforementioned paper. The code is released under BSD licence. Please make appropriate citation if you use the technique/code.
 
+##### version 1.0.1 (Nov 14, 2016)
+
+*** Fixed a bug in computation of harmonic field ***
 
 ##### version 1.0 (Dec 18, 2015)
 ***Serial implementation on regular/rectangular grids***
