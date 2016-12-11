@@ -232,6 +232,9 @@ public:
     /// Compute square of the distance on the regular grid
     float get_dist_sq(size_t v1, size_t v2) const{
 
+        if(v1 == v2) {
+            return powf(10, -6);
+        }
         if(dim == 1){
             long int dist = (v1-v2);
             return dist*dist*sq_dx;

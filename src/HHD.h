@@ -176,10 +176,14 @@ private:
             #pragma omp parallel for
             for(size_t v = 0; v < rgrid.sz; v++){
 
+                // Harsh fixed this on 12/11/2016
+#if 1
+                T dist = rgrid.get_dist_sq (v, v0);
+#else
                 // don't want to compute log (0)
                 T dist = (v == v0) ? (0.01 * (rgrid.dx+rgrid.dy)) :
                                      rgrid.get_dist_sq(v, v0);
-
+#endif
                 fdt[v] = (log(dist) * fd[v]);
                 frt[v] = (log(dist) * fr[v]);
             }
@@ -250,10 +254,14 @@ private:
             #pragma omp parallel for
             for(size_t v = 0; v < rgrid.sz; v++){
 
+                // Harsh fixed this on 12/11/2016
+#if 1
+                T dist = rgrid.get_dist (v, v0);
+#else
                 // don't want to compute 1 / 0
                 T dist = (v == v0) ? (0.01 * (rgrid.dx+rgrid.dy+rgrid.dz)) :
                                      rgrid.get_dist(v, v0);
-
+#endif
                 T ldist = 1.0 / dist;
 
                 fdt[v] = (ldist * fd[v]);

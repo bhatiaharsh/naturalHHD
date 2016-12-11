@@ -99,7 +99,13 @@ public:
         if(rgrid.dim == 2){
 
             T Greens_factor = 0.25/M_PI;
+
+            // Harsh fixed this on 12/11/2016
+#if 1
+            zeroval = Greens_factor * log( rgrid.get_dist_sq(0, 0) );
+#else
             zeroval = Greens_factor * log((0.01 * (rgrid.dx+rgrid.dy)));
+#endif
 
             for(size_t v0 = 0; v0 < sz; v0++){
             for(size_t v = v0+1; v < sz; v++){
@@ -116,8 +122,12 @@ public:
 
             T Greens_factor = -0.25/M_PI;
 
+            // Harsh fixed this on 12/11/2016
+#if 1
+            zeroval = Greens_factor * log( rgrid.get_dist(0, 0) );
+#else
             zeroval = Greens_factor / (0.01 * (rgrid.dx+rgrid.dy+rgrid.dz));
-
+#endif
             for(size_t v0 = 0; v0 < sz; v0++){
             for(size_t v = v0+1; v < sz; v++){
                 onedmap[get_1didx(v0, v)] = Greens_factor / rgrid.get_dist(v0, v);
