@@ -488,7 +488,8 @@ public:
         if(dim == 2){
             u = new T[sz];
             v = new T[sz];
-
+            
+            #pragma omp parallel for
             for(size_t i = 0; i < sz; i++){
                 u[i] = vf.u[i] - d.u[i] - r.u[i];
                 v[i] = vf.v[i] - d.v[i] - r.v[i];
@@ -501,9 +502,10 @@ public:
             v = new T[sz];
             w = new T[sz];
 
+            #pragma omp parallel for
             for(size_t i = 0; i < sz; i++){
                 u[i] = vf.u[i] - d.u[i] - r.u[i];
-                v[i] = vf.v[i] - d.v[i] - d.v[i];
+                v[i] = vf.v[i] - d.v[i] - r.v[i];
                 w[i] = vf.w[i] - d.w[i] - r.w[i];
             }
         }
