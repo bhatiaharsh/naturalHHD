@@ -116,5 +116,11 @@ int main (int argc, char* argv[]){
     d.write_to_file("gradfield.raw");
     r.write_to_file("curlfield.raw");
     h.write_to_file("harmfield.raw");
+
+    // -------------------------------------------------------
+    // write D
+    RW::write_binary<float>("nD.raw", nhhd.D, rgrid.sz, true);
+
+
     return 0;
 }
