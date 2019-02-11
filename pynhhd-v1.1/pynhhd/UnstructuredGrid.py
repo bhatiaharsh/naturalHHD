@@ -46,7 +46,7 @@ class UnstructuredGrid(object):
             return numpy.abs(numpy.dot(a-o,numpy.cross(b-o,c-o))) / 6.0
 
         if verbose:
-            print '     Computing point areas/volumes...',
+            print('     Computing point areas/volumes...',)
             sys.stdout.flush()
             mtimer = Timer()
 
@@ -57,7 +57,7 @@ class UnstructuredGrid(object):
         # triangulation
         if self.dim == 2:
 
-            for sidx in xrange(self.nsimplices):
+            for sidx in range(self.nsimplices):
 
                 simp = self.simplices[sidx]
                 verts = self.vertices[simp]
@@ -84,7 +84,7 @@ class UnstructuredGrid(object):
                     self.cvolumes[sidx,2] = self.svolumes[sidx] - self.cvolumes[sidx,0] - self.cvolumes[sidx,1];
                 else:
                     ewscale = 0.5 * self.svolumes[sidx] / (ew[0] + ew[1] + ew[2])
-                    for d in xrange(3):
+                    for d in range(3):
                         self.cvolumes[sidx,d] = ewscale * (ew[(d+1)%3] + ew[(d+2)%3])
 
                 self.pvolumes[simp[0]] += self.cvolumes[sidx,0]
@@ -95,7 +95,7 @@ class UnstructuredGrid(object):
         elif self.sdim == 3:
 
             raise ValueError('TODO: pvolumes for 3D')
-            for sidx in xrange(self.nsimplices):
+            for sidx in range(self.nsimplices):
 
                 simp = self.simplices[sidx]
                 verts = self.vertices[simp]
@@ -107,7 +107,7 @@ class UnstructuredGrid(object):
 
 
         if verbose:
-            print ' Done!',
+            print(' Done!',)
             mtimer.end()
 
         return self.pvolumes
@@ -123,23 +123,23 @@ class UnstructuredGrid(object):
             return self.adjacent_faces
 
         if verbose:
-            print '     Computing adjacent_faces...',
+            print('     Computing adjacent_faces...',)
             sys.stdout.flush()
             mtimer = Timer()
 
         numadjacentfaces = numpy.zeros(self.nvertices, dtype=int)
         for f in self.simplices:
-            for i in xrange(3):
+            for i in range(3):
                 numadjacentfaces[f[i]] += 1
 
         # can be optimized further by avoiding "append"?
-        self.adjacent_faces = [[] for _ in xrange(self.nvertices)]
-        for fidx in xrange(self.nsimplices):
-            for i in xrange(3):
+        self.adjacent_faces = [[] for _ in range(self.nvertices)]
+        for fidx in range(self.nsimplices):
+            for i in range(3):
                 self.adjacent_faces[self.simplices[fidx, i]].append(fidx)
 
         if verbose:
-            print 'Done!',
+            print('Done!',)
             mtimer.end()
 
         return self.adjacent_faces
@@ -157,14 +157,14 @@ class UnstructuredGrid(object):
         self.need_adjacentfaces(verbose)
 
         if verbose:
-            print '     Computing across_edge...',
+            print('     Computing across_edge...',)
             sys.stdout.flush()
             mtimer = Timer()
 
         self.across_edge = -1 * numpy.ones((self.nsimplices, 3), dtype=numpy.int)
 
-        for fidx in xrange(self.nsimplices):
-            for i in xrange(3):
+        for fidx in range(self.nsimplices):
+            for i in range(3):
 
                 if self.across_edge[fidx, i] != -1:
                     continue
@@ -191,7 +191,7 @@ class UnstructuredGrid(object):
                     self.across_edge[other, j] = fidx
 
         if verbose:
-            print ' Done!',
+            print(' Done!',)
             mtimer.end()
         return self.across_edge
 
@@ -208,22 +208,22 @@ class UnstructuredGrid(object):
         self.need_acrossedge(verbose)
 
         if verbose:
-            print '     Computing the boundary...',
+            print('     Computing the boundary...',)
             sys.stdout.flush()
             mtimer = Timer()
 
         # find all boundary faces and edges
-        bfaces = [fidx for fidx in xrange(self.nsimplices) if -1 in self.across_edge[fidx]]
+        bfaces = [fidx for fidx in range(self.nsimplices) if -1 in self.across_edge[fidx]]
         bedges = []
 
         for fidx in bfaces:
             face = self.simplices[fidx]
             nbrs = self.across_edge[fidx]
-            bedges.extend( [[fidx, k] for k in xrange(3) if nbrs[k] == -1] )
+            bedges.extend( [[fidx, k] for k in range(3) if nbrs[k] == -1] )
 
         self.bedges = numpy.array(bedges)
         if verbose:
-            print ' Done! found', self.bedges.shape[0], 'boundary edges',
+            print(' Done! found', self.bedges.shape[0], 'boundary edges',)
             mtimer.end()
 
         return self.bedges
@@ -257,46 +257,53 @@ class UnstructuredGrid(object):
             raise SyntaxError("Mesh object works for 2D and 3D only")
 
         if verbose > 0:
-            print '     Initializing', self.dim, 'D mesh with', self.nvertices, 'vertices...',
+            print('     Initializing', self.dim, 'D mesh with', self.nvertices, 'vertices...',)
             sys.stdout.flush()
             mtimer = Timer()
 
         if verbose > 1:
-            print ''
+            print('')
 
         # create simplices if needed
         if 'simplices' in args:
             self.Delaunay = None
             self.simplices = kwargs['simplices']
             if verbose > 1:
-                print '      got', self.simplices.shape[0], 'simplices'
+                print('      got', self.simplices.shape[0], 'simplices')
+        elif 'area' in args:
+            self.Delaunay = None
+            self.simplices = None
+            self.area = kwargs['area']
         else:
             if verbose > 1:
-                print '      creating Delaunay mesh...'
+                print('      creating Delaunay mesh...')
                 sys.stdout.flush()
 
             self.Delaunay = spatial.Delaunay(self.vertices)
             self.simplices = self.Delaunay.simplices
 
             if verbose > 1:
-                print ' Done! created', self.simplices.shape[0], 'simplices'
+                print(' Done! created', self.simplices.shape[0], 'simplices')
                 sys.stdout.flush()
-
-        self.nsimplices = self.simplices.shape[0]
-        if self.dim != self.simplices.shape[1]-1:
-            raise SyntaxError("Dimension mismatch! pdim = "+str(pdim)+" and sdim = "+str(sdim)+" do not match!")
+        if 'area' in args:
+            self.nsimplices = self.area.shape[0]
+        else:
+            self.nsimplices = self.simplices.shape[0]
+            if self.dim != self.simplices.shape[1]-1:
+                raise SyntaxError("Dimension mismatch! pdim = "+str(pdim)+" and sdim = "+str(sdim)+" do not match!")
 
         self.adjacent_faces = []
         self.across_edge = numpy.empty((0,0))
         self.bedges = numpy.empty((0,0))
         self.pvolumes = numpy.empty(0)
-
+        #if 'area' in args:
+        # I THINK ONE COULD PROVIDE AREA RIGHT AWAY AND NOT TRIANGULATE!
         self.need_volumes(verbose > 1)
         self.need_boundary(verbose > 1)
         #self.need_meshmatrices(verbose > 1)
 
         if verbose > 0:
-            print ' Done!',
+            print(' Done!',)
             mtimer.end()
 
     # --------------------------------------------------------------------------
@@ -304,11 +311,11 @@ class UnstructuredGrid(object):
     def divcurl(self, vfield, verbose=False):
 
         if vfield.shape != (self.nsimplices, self.dim):
-            print 'UnstructuredGrid.divcurl', vfield.shape, self.dim, self.vertices.shape, self.simplices.shape
+            print('UnstructuredGrid.divcurl', vfield.shape, self.dim, self.vertices.shape, self.simplices.shape)
             raise ValueError("UnstructuredGrid requires a valid-dimensional vector field")
 
         if verbose:
-            print '     Computing divcurl...',
+            print('     Computing divcurl...',)
             sys.stdout.flush()
             mtimer = Timer()
 
@@ -316,11 +323,11 @@ class UnstructuredGrid(object):
         curlw = numpy.zeros(self.nvertices)
 
         # for each face
-        for sidx in xrange(self.nsimplices):
+        for sidx in range(self.nsimplices):
 
             simp = self.simplices[sidx]
 
-            for k in xrange(3):
+            for k in range(3):
 
                 v = simp[k]
                 a = simp[ (k+1)%3 ]
@@ -360,7 +367,7 @@ class UnstructuredGrid(object):
         curlw = 0.5 * curlw
 
         if verbose:
-            print ' Done!',
+            print(' Done!',)
             mtimer.end()
             #print '\tdiv =', div.shape, div.min(), div.max()
             #print '\tcurlw =', curlw.shape, curlw.min(), curlw.max()
@@ -370,18 +377,18 @@ class UnstructuredGrid(object):
     def gradient(self, sfield, verbose=False):
 
         if sfield.shape[0] != self.nvertices:
-            print 'UnstructuredGrid.gradient', self.dim, sfield.shape, self.vertices.shape, self.simplices.shape
+            print('UnstructuredGrid.gradient', self.dim, sfield.shape, self.vertices.shape, self.simplices.shape)
             raise ValueError("UnstructuredGrid requires a valid-dimensional vector field")
 
         if verbose:
-            print '     Computing gradient...',
+            print('     Computing gradient...',)
             sys.stdout.flush()
             mtimer = Timer()
 
         grad = numpy.zeros((self.nsimplices, self.dim))
 
         # for 2D
-        for sidx in xrange(self.nsimplices):
+        for sidx in range(self.nsimplices):
 
             deb = sidx==0
 
@@ -389,9 +396,9 @@ class UnstructuredGrid(object):
             f = 0.5 / self.svolumes[sidx]
 
             if deb:
-                print sidx, simp, self.svolumes[sidx], f
+                print(sidx, simp, self.svolumes[sidx], f)
 
-            for k in xrange(3):
+            for k in range(3):
 
                 v = simp[k]
                 a = simp[ (k+1)%3 ]
@@ -404,10 +411,10 @@ class UnstructuredGrid(object):
                 grad[sidx] += f * sfield[v] * nvec
 
                 if deb:
-                    print '\t', k, nvec, sfield[v],grad[sidx]
+                    print('\t', k, nvec, sfield[v],grad[sidx])
 
         if verbose:
-            print ' Done!',
+            print(' Done!',)
             mtimer.end()
         return grad
 
