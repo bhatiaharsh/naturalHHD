@@ -43,10 +43,10 @@ class Timer(object):
         tseconds = self.etime - self.stime
 
         s = ' [[ elapsed time: '
-        if tseconds < np.power(10.,-6.):
+        if tseconds < 0.000001:
             s = s + ("%.3f micro-sec." % (tseconds*1000000))
 
-        elif tseconds < np.power(10.,-3.):
+        elif tseconds < 0.001:
             s = s + ("%.3f milli-sec." % (tseconds*1000))
 
         elif tseconds < 60.0:

@@ -28,6 +28,8 @@ LOGGER = logging.getLogger(__name__)
 from .poisson import PoissonSolver
 from .structured import StructuredGrid
 from .unstructured import UnstructuredGrid
+from .StructuredSphericalGrid import StructuredSphericalGrid
+import .nHHD_utils as nutils
 
 # ---------------------------------------------------------------------------
 class nHHD(object):
@@ -37,16 +39,16 @@ class nHHD(object):
 
         args = list(kwargs.keys())
 
-        if ('grid' in args) == ('points' in args):
+        if not ('grid' in args) and not ('points' in args) and not ('sphericalgrid' in args):
             raise SyntaxError("nHHD Solver needs either shape of a regular grid or the points in an rectilinear/unstructured grid")
-
-        if ('grid' in args) != ('spacings' in args):
+        if (('grid' in args) != ('spacings' in args)) and (('sphericalgrid' in args) != ('spacings' in args)):
             raise SyntaxError("nHHD needs spacings for regular grid")
-
         if 'grid' in args:
             self.mesh = StructuredGrid(grid=kwargs['grid'], spacings=kwargs['spacings'])
             self.psolver = PoissonSolver(grid=self.mesh.dims, spacings=self.mesh.dx)
-
+        elif 'sphericalgrid' in args:
+            self.mesh = StructuredSphericalGrid(sphericalgrid=kwargs['sphericalgrid'], spacings=kwargs['spacings'],lat=kwargs['lat'],lon=kwargs['lon'])
+            self.psolver = PoissonSolver(sphericalgrid=self.mesh.dims, spacings=self.mesh.dx,lat=kwargs['lat'],lon=kwargs['lon'])
         elif 'points' in args:
 
             if 'simplices' in args:
@@ -60,11 +62,12 @@ class nHHD(object):
         if (self.dim != 2) and (self.dim != 3):
             raise ValueError("nHHD Solver works only for 2 and 3 dimensions")
 
-        self.psolver.prepare()
-        LOGGER.info('Initialized nHHD module')
+        if not 'sphericalgrid' in args:
+            #no need to do this if spherical grid - we need to calculate greens's function multiple times
+            self.psolver.prepare(True)
 
     # create the 3-component decomposition
-    def decompose(self, vfield):
+    def decompose(self, vfield, verbose=0, num_cores=32, tuning_param=0.0625, div=None, curlw=None):
 
         if vfield.shape[-1] != self.dim:
             raise ValueError("nHHD.decompose requires a valid-dimensional vector field")
@@ -75,18 +78,29 @@ class nHHD(object):
         if self.dim == 2:
 
             # compute div curl
-            (self.div, self.curlw) = self.mesh.divcurl(vfield)
+            if numpy.all(div==None) and numpy.all(curlw==None):
+                # calculate div and curl if they are not known
+                (self.div, self.curlw) = self.mesh.divcurl(vfield)
+                #(self.div, self.curlw) = self.mesh.divcurl3(vfield,use_xesmf=True, mode='bilinear')
+            else:
+                # here is a possibility to give div and curl directly
+                # highly suggested if your data is not on cartesian grid
+                # e.g. with model output, use the model definition of the div and curl
+                self.div = div
+                self.curlw = curlw 
 
             LOGGER.debug('div  = {} {} {}'.format(self.div.shape, self.div.min(), self.div.max()))
             LOGGER.debug('curl = {} {} {}'.format(self.curlw.shape, self.curlw.min(), self.curlw.max()))
 
             # compute potentials
-            self.nD = self.psolver.solve(self.div)
-            LOGGER.debug('D    = {} {} {}'.format(self.nD.shape, self.nD.min(), self.nD.max()))
+            if False: #numpy.any(self.psolver.lat==None):
+                self.nD = self.psolver.solve(self.div, verbose > 0) #1)
+                LOGGER.debug('D    = {} {} {}'.format(self.nD.shape, self.nD.min(), self.nD.max()))
 
-            self.nRu = self.psolver.solve(self.curlw)
-            LOGGER.debug('Ru   = {} {} {}'.format(self.nRu.shape, self.nRu.min(), self.nRu.max()))
-
+                self.nRu = self.psolver.solve(self.curlw, verbose > 0) #1)
+                LOGGER.debug('Ru   = {} {} {}'.format(self.nRu.shape, self.nRu.min(), self.nRu.max()))
+            else:
+                self.nD, self.nRu = nutils.solve(numpy.stack([self.div,self.curlw],axis=-1),self.psolver.lat,self.psolver.lon,self.psolver.gdx,num_cores=num_cores,tuning_param=tuning_param)
             # compute fields as gradients of potentials
             self.d = self.mesh.gradient(self.nD)
             self.r = self.mesh.rotated_gradient(self.nRu)
