@@ -59,7 +59,7 @@ def create_radialGrid_2(rlat,rlon,j,i):
     # Compute Green's function
     #G = -numpy.log(0.5*(1 - numpy.cos(gamma)))/(4*numpy.pi)
     G = -numpy.log(numpy.sin(0.5*gamma))/(2*numpy.pi)
-    G[j,i] = 0 
+    G[j,i] = 0
     #
     return G
 
@@ -68,18 +68,18 @@ def create_radialGrid_1(rlat2,rlon,j,i):
     '''
     NOTE THAT BECAUSE OF NUMERICAL REASONS IT IS !VERY! IMPORTANT TO USE AT LEAST
     NUMPY.FLOAT64 PRECISSION FOR RLAT AND RLON!!
-    
+
     Returns
-       
+
     G=-log(1-cos(y))/(4*np.pi)
-    
+
     where y is the great circle angle
-    
+
     Following Kimura 1999: Vortex motion on surfaces with constant curvature
-    DOI: 10.1098/rspa.1999.0311 
-    
+    DOI: 10.1098/rspa.1999.0311
+
     and Kimura and Okamoto 1987: Vortex Motion on a Sphere, https://doi.org/10.1143/JPSJ.56.4203
-    
+
     Note that the speacial case of Vincenty's formula is more accurate for great circle angle.
     '''
     #
@@ -91,7 +91,7 @@ def create_radialGrid_1(rlat2,rlon,j,i):
     G[j,i] = 0 # set this to zero, will integrate the discontinuity elsewhere
     #
     return G
- 
+
 def int_fun(x,y):
     '''
     function to integrate over singularity
@@ -108,7 +108,7 @@ def solve_parallel(lat,lon,ny,nx,f,p,j,dxy,gdx2, tuning_param = 0.0625):
     where distance goes to 0 and Green's function to infinity), and
     finally loop over each point in longitude and integrate G*f
 
-    lat, lon and gdx2 are all in radians. 
+    lat, lon and gdx2 are all in radians.
     '''
     if j%(ny//20)==0:
        print(str(100*j/ny)+'% ready')
@@ -118,20 +118,20 @@ def solve_parallel(lat,lon,ny,nx,f,p,j,dxy,gdx2, tuning_param = 0.0625):
         #
         # Here are two integrals for the Green's function singularity
         #
-        # This is a line integral of the greensfunction log(sin(x/2))/2*pi  over the central cell stacked up due to symmetry - 
+        # This is a line integral of the greensfunction log(sin(x/2))/2*pi  over the central cell stacked up due to symmetry -
         # Note that this is not completely accurate because the symmetry is circular, while we are stacking up to form a rectangle
         # Note that the integral is from 0 to g (the cell boundary in lat) and use the symmetry i.e. multiply by 2
         # here it is important to integrate from 0 to g and multiply by 2 or integrate from -g to g
-        # 
+        #
         # this is basically Area*mean_value i.e. Area*1/l int^l_0 log(1-cos(x)) dx
-        # 
+        #
         # d_ang = tuning_param*(gdx2[0]+gdx2[1]*numpy.cos(lat[j,0]))
         # G[j,0] = (1/d_ang)*integrate.quad(lambda x: -numpy.log(numpy.sin(x/2))/(2*numpy.pi), 0,d_ang)[0]
         #
         # Direct double integral - this is more accurate, directly integrate over radial symmetry
         #
         da1 = tuning_param*gdx2[0]
-        da2 = tuning_param*gdx2[1]*numpy.cos(lat[j,0]) 
+        da2 = tuning_param*gdx2[1]*numpy.cos(lat[j,0])
         G[j,0]  = (1/(da1*da2))*integrate.dblquad(int_fun,0,da1,0,da2)[0]
         #
         for i in iinds:
@@ -140,17 +140,17 @@ def solve_parallel(lat,lon,ny,nx,f,p,j,dxy,gdx2, tuning_param = 0.0625):
 
 def solve(f,lat,lon,gdx,num_cores=20,r=6371E3, tuning_param=0.0625):
     '''
-    
+
     Convolution with Green's function with divergence and curl.
-    Note that on a spherical partially masked domain (i.e. one with land) 
+    Note that on a spherical partially masked domain (i.e. one with land)
     the Green's function is unique for each point and thus we need to integrate
-    each point separately. Here we use just a Green's function on a sphere 
+    each point separately. Here we use just a Green's function on a sphere
     (i.e. Green's function is not aware of the land) in which case the Green's function
     is unique for each latitude.
 
     The function is parallized with joblib, with the outher parallel loop iterating
     through latitudes while the inner loop goes through longitudes.
-    
+
     Parameters
     ----------
     f            : numpy.array, should be numpy.stack([self.div,self.curl],axis=-1)
@@ -158,17 +158,17 @@ def solve(f,lat,lon,gdx,num_cores=20,r=6371E3, tuning_param=0.0625):
     lon          : numpy.array (2D), longitude in degrees
     gdx          : list of integers or numpy.arrays specifying the grid size in lat/lon as [dy,dx]
     num_cores    : integer, number of cores to use, default is 10
-    r            : float, radius of the planet in meters, default is earth i.e. R=6371E3 m 
+    r            : float, radius of the planet in meters, default is earth i.e. R=6371E3 m
     tuning_param : float, tuning parameter for integrating over the Green's function singularity at
                    the point (j,i). Essentially a 1/weight for the central cell when convolving.
                    Default is 0.0625. See solve_parallel for detailed explanation.
 
     Returns
     --------
-    phi, psi     : numpy.array (2D), estimates of the velocity potential (phi) and streamfunction (psi)  
-    
+    phi, psi     : numpy.array (2D), estimates of the velocity potential (phi) and streamfunction (psi)
+
     '''
-    print(lat.dtype,lon.dtype)
+    print('solve:', lat.dtype,lon.dtype)
     ny, nx          = lat.shape
     gdx2            = numpy.radians(numpy.array(gdx))
     rlat            = numpy.radians(lat) # latitude - note that the definition for polar angle in Kimura measures from earth's axis i.e. 90-latitude

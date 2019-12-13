@@ -21,9 +21,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
+import sys
 import numpy
 from scipy import interpolate
 import nHHD_utils as nutils
+from timer import Timer
 
 # ------------------------------------------------------------------------------
 class StructuredSphericalGrid(object):
@@ -74,9 +76,9 @@ class StructuredSphericalGrid(object):
     def divcurl2(self, vfield, verbose=False, glob=True, r=6371E3):
         '''
         THIS IS NOT USED AT THE MOMENT - BUT FEEL FREE TO PLAY AROUND
-        
+
         Here we use splines to get more accurate (?) gradients than just central differences
-        
+
         '''
         dudx_spline = interpolate.RectBivariateSpline(numpy.radians(self.lat[:,0]), numpy.radians(self.lon[0,:]), vfield[:,:,0])
         dvdx_spline = interpolate.RectBivariateSpline(numpy.radians(self.lat[:,0]), numpy.radians(self.lon[0,:]), vfield[:,:,1])
@@ -90,18 +92,18 @@ class StructuredSphericalGrid(object):
         #
         div = numpy.add(dudx, dvdy)
         curl = numpy.subtract(dvdx, dudy)
-        
+
         return (div, curl)
-    
+
     def divcurl3(self, vfield, verbose=False, glob=True, r=6371E3, use_xesmf=True, mode='bilinear'):
         '''
         THIS IS NOT USED AT THE MOMENT -BUT FEEL FREE TO PLAY AROUND
-        
+
         Define the derivatives as forward derivatives and then use the spline interpolation to center the derivatives
         this is closer to the original central difference approach - and wrapping around is easier to take care of
         note that could also use xesmf for the regridding
         '''
-    
+
         dudy = numpy.zeros(vfield[:,:,0].shape)
         dudx = numpy.zeros(vfield[:,:,0].shape)
         dvdy = numpy.zeros(vfield[:,:,0].shape)
@@ -110,7 +112,7 @@ class StructuredSphericalGrid(object):
         lon2x = numpy.radians(lon2[:,1:])
         lat2x = numpy.radians(lat2[:,1:])
         lon2y = numpy.radians(lon2[1:,:])
-        lat2y = numpy.radians(lat2[1:,:]) 
+        lat2y = numpy.radians(lat2[1:,:])
         dudy[1:,:] = (vfield[1:,:,0]*numpy.cos(numpy.radians(self.lat[1:,:]))-vfield[:-1,:,0]*numpy.cos(numpy.radians(self.lat[:-1,:])))/(numpy.radians(self.dx[0])*r*numpy.cos(lat2y))
         dvdy[1:,:] = (vfield[1:,:,1]*numpy.cos(numpy.radians(self.lat[1:,:]))-vfield[:-1,:,1]*numpy.cos(numpy.radians(self.lat[:-1,:])))/(numpy.radians(self.dx[0])*r*numpy.cos(lat2y))
         dudx[:,1:] = (vfield[:,1:,0]-vfield[:,:-1,0])/(numpy.radians(self.dx[1])*r*numpy.cos(lat2x))
@@ -131,7 +133,7 @@ class StructuredSphericalGrid(object):
         elif use_xesmf:
             dudx2 = nutils.wrap_xesmf(dudx, self.lat, self.lon, self.lat,  lon2, self.dx, reuse_w=True, mode=mode)
             dvdx2 = nutils.wrap_xesmf(dvdx, self.lat, self.lon, self.lat,  lon2, self.dx, reuse_w=True, mode=mode)
-            dudy2 = nutils.wrap_xesmf(dudy, self.lat, self.lon, lat2, self.lon,  self.dx, reuse_w=True, mode=mode) 
+            dudy2 = nutils.wrap_xesmf(dudy, self.lat, self.lon, lat2, self.lon,  self.dx, reuse_w=True, mode=mode)
             dvdy2 = nutils.wrap_xesmf(dvdy, self.lat, self.lon, lat2, self.lon,  self.dx, reuse_w=True, mode=mode)
         #
         div2 = numpy.add(dudx2, dvdy2)
@@ -149,10 +151,10 @@ class StructuredSphericalGrid(object):
         '''
         THIS IS USED AT THE MOMENT - EXACTLY THE SAME APPROACH AS IN NON-SPHERICAL GRID,
         BUT GRADIENTS ARE DEFINED ON A SPHERE
-        
+
         (discrete) Divergence and curl are calculated from a vector field.
         If glob=True a wrap around in longitude is assumed.
-        This function uses central differences. 
+        This function uses central differences.
         '''
 
         #if (vfield.shape[-1] != self.dim) or (vfield.shape[0:self.dim] - self.dims).any():
@@ -165,7 +167,7 @@ class StructuredSphericalGrid(object):
             mtimer = Timer()
 
         if self.dim == 2:
-            
+
             if glob:
                 #second order derivative at the wrapping longitude boundary
                 dudy = numpy.gradient(vfield[:,:,0]*numpy.cos(numpy.radians(self.lat)), numpy.radians(self.dx[0]), axis=0)/(r*numpy.cos(numpy.radians(self.lat)))
@@ -180,7 +182,7 @@ class StructuredSphericalGrid(object):
                 dvdx[:,-1] = numpy.gradient(numpy.concatenate([vfield[:,-2:,1],vfield[:,:1,1]],axis=1), numpy.radians(self.dx[1]), axis=1)[:,1]/(r*numpy.cos(numpy.radians(self.lat[:,0])))
             else:
                 # self.dx = (dy,dx)
-                dudy = numpy.gradient(vfield[:,:,0]*numpy.cos(numpy.radians(self.lat)), numpy.radians(self.dx[0]), axis=0)/(r*numpy.cos(numpy.radians(self.lat))) 
+                dudy = numpy.gradient(vfield[:,:,0]*numpy.cos(numpy.radians(self.lat)), numpy.radians(self.dx[0]), axis=0)/(r*numpy.cos(numpy.radians(self.lat)))
                 dudx = numpy.gradient(vfield[:,:,0], numpy.radians(self.dx[1]), axis=1)/(r*numpy.cos(numpy.radians(self.lat)))
                 dvdy = numpy.gradient(vfield[:,:,1]*numpy.cos(numpy.radians(self.lat)), numpy.radians(self.dx[0]), axis=0)/(r*numpy.cos(numpy.radians(self.lat)))
                 dvdx = numpy.gradient(vfield[:,:,1], numpy.radians(self.dx[1]), axis=1)/(r*numpy.cos(numpy.radians(self.lat)))
@@ -269,7 +271,7 @@ class StructuredSphericalGrid(object):
             ddx = numpy.gradient(sfield, numpy.radians(self.dx[1]), axis=1)/(r*numpy.cos(numpy.radians(self.lat)))
         #
         ddy = -1.0*ddy
-        
+
         grad = numpy.stack((ddy, ddx), axis=-1)
 
         if verbose:
@@ -281,11 +283,13 @@ class StructuredSphericalGrid(object):
     def gradient(self, sfield, verbose=False, glob=True, r=6371E3):
         '''
         Calculate the discrete (central differences) gradient of a scalar field.
-        
+
         if glob=True we assume a global doamin and wrapping around in longitude (axis=1)
         In this case also the end points will use central differences, else they will use
-        forward (backward) differences at the left and right hand extremes of the matrix. 
+        forward (backward) differences at the left and right hand extremes of the matrix.
         '''
+
+        verbose = True
 
         if (sfield.shape != self.dims):
 	    #if (sfield.shape - self.dims).any():
@@ -298,6 +302,9 @@ class StructuredSphericalGrid(object):
 
         if self.dim == 2:
 
+            print (glob, self.dx, r)
+            print (sfield.min(), sfield.max())
+
             if glob:
                 ddy = numpy.gradient(sfield, numpy.radians(self.dx[0]), axis=0)/r
                 ddx = numpy.gradient(sfield, numpy.radians(self.dx[1]), axis=1)/(r*numpy.cos(numpy.radians(self.lat)))
@@ -307,7 +314,7 @@ class StructuredSphericalGrid(object):
                 # self.dx = (dy,dx)
                 ddy = numpy.gradient(sfield, numpy.radians(self.dx[0]), axis=0)/r
                 ddx = numpy.gradient(sfield, numpy.radians(self.dx[1]), axis=1)/(r*numpy.cos(numpy.radians(self.lat)))
-            
+
             grad = numpy.stack((ddx, ddy), axis = -1)
 
         elif self.dim == 3:

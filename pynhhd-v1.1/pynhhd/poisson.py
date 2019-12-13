@@ -122,6 +122,8 @@ class PoissonSolver(object):
             self.stype = 'S'            # only option
             self.points = kwargs['points']
             self.pvolumes = kwargs['pvolumes']
+            self.lat = None
+            self.lon = None
             self.dim = len(self.points.shape)
             if self.pvolumes.shape[0] != self.points.shape[0]:
                 raise ValueError("Number of pvolumes should match that of the points")
@@ -154,7 +156,7 @@ class PoissonSolver(object):
     # generate a grid -(N-1) to (N-1) to define distance function
     #     where N is the size of the original grid
     # ALEKSI: SO I THINK I UNDERSTAND WHAT IS GOING ON HERE
-    #         THE GRID IS FIRST CREATED AND THE DISTANCE ARRAY 
+    #         THE GRID IS FIRST CREATED AND THE DISTANCE ARRAY
     #         IS CALCULATED AS A HYPOTENUSE OF THE X AND Y
     #         I DON'T QUITE UNDERSTAND WHY THE RESULTING ARRAY
     #         NEEDS TO HAVE (2nX-1,2nY-1) SHAPE THOUGH
@@ -167,13 +169,13 @@ class PoissonSolver(object):
             print('  - creating distance kernel:',)
 
         rdims = tuple(2*d - 1 for d in self.gdims)
-        
+
         if numpy.isscalar(self.gdx[0]):
             R = numpy.indices(rdims, dtype=self.dtype)
             for d in range(self.dim):
                 R[d] += 1-self.gdims[d]
                 R[d] *= self.gdx[d]
-                
+
         if self.dim == 1:
             numpy.absolute(R[0], R[0])
             R = R[0]
@@ -186,7 +188,7 @@ class PoissonSolver(object):
             if numpy.isscalar(self.gdx[0]):
                 zval = 0.5 * (self.gdx[0]+self.gdx[1]) / 2.0
                 R[self.gdims[0]-1, self.gdims[1]-1] = zval
-        
+
         elif self.dim == 3:
             numpy.hypot(R[2], R[1], R[1])
             numpy.hypot(R[1], R[0], R[0])
@@ -201,7 +203,7 @@ class PoissonSolver(object):
             mtimer.end()
 
         return R
-    
+
 
     def _create_radialGrid_2(self, verbose, j, i=0):
         # use the AzimuthalEquidistant from cartopy on a sphere
@@ -245,7 +247,7 @@ class PoissonSolver(object):
         # flip around so wraps around in latitude
         lat2=numpy.concatenate([lat2[:,:nx//2],lat2[:,nx//2:][::-1,::-1]],axis=0)
         lon2=numpy.concatenate([lon2[:,:nx//2],lon2[:,nx//2:][::-1,::-1]],axis=0)
-        # roll in latitude so that the j,i location is at 'north pole' (middle of the array) 
+        # roll in latitude so that the j,i location is at 'north pole' (middle of the array)
         lat2=numpy.roll(lat2,ny-j-1,axis=0)
         lon2=numpy.roll(lon2,ny-j-1,axis=0)
         # calculate the distance matrix
@@ -388,21 +390,21 @@ class PoissonSolver(object):
     # --------------------------------------------------------------------------
     # compute the integral solution
     # --------------------------------------------------------------------------
-    
+
     def create_shift_inds(self,ny,nx):
         ''' '''
         iinds0 = numpy.tile(numpy.arange(nx),(nx,1))
         jinds0 = numpy.tile(numpy.arange(ny*2),(ny*2,1))
         for i in range(nx):
               iinds0[i,:] =  numpy.roll(iinds0[i,:],nx//4-i-1)
-        
+
         for j in range(ny*2):
               jinds0[j,:] = numpy.roll(jinds0[j,:],ny-j-1)
-        
+
         return jinds0, iinds0
-    
+
     def solve_parallel(self,verbose,ny,nx,f,p,j,iinds0,jinds0):
-        '''this function can be run in parallel from the solve 
+        '''this function can be run in parallel from the solve
            NEW STRATEGY - WE WILL LOOP OVER BOTH J AND I
            AT EVERY I MAKE EARTH WRAP AROUND IN LATITUDE
            AND PLACE THE NORTH POLE AT YOUR CURRENT LOCATION
@@ -422,7 +424,7 @@ class PoissonSolver(object):
                    print(j,i)
                #if abs(f[j,i])>0
                #print(j,i)
-               #G = self._create_radialGrid_3(False,ny,nx, j, i)                                                                                                     
+               #G = self._create_radialGrid_3(False,ny,nx, j, i)
                #G = 1/(4*numpy.pi*G) #numpy.log(G)
                #G = numpy.multiply(G, (0.5 / numpy.pi))
                #p0 = signal.fftconvolve(f, G, mode='same')
@@ -433,7 +435,7 @@ class PoissonSolver(object):
                f2=numpy.take(f2,numpy.take(jinds0,j,axis=0),axis=0) #f2[jinds0[j,:],:] #numpy.roll(f2,ny-j-1,axis=0)
                p[j,i] = signal.fftconvolve(f2, G, mode='valid')
                #p[j,i] = p0 #[ny,nx//4]
-        
+
     def solve(self, f, verbose=False, num_cores=20):
 
         if numpy.any(self.lat==None) and not self.ready:
