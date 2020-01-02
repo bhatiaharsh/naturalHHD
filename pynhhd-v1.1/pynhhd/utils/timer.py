@@ -21,39 +21,43 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-import numpy
+import numpy as np
 import timeit
 
 class Timer(object):
 
-    def display(self):
-
-        tseconds = self.etime - self.stime
-
-        print ' [[ elapsed time:',
-        if tseconds < numpy.power(10.,-6.):
-            print("%.3f micro-sec." % (tseconds*numpy.power(10,6))),
-
-        elif tseconds < numpy.power(10.,-3.):
-            print("%.3f milli-sec." % (tseconds*numpy.power(10.,3.))),
-
-        elif tseconds < 60.0:
-            print("%.3f sec." % (tseconds)),
-
-        else:
-            m = int(tseconds/ 60.0)
-            print("%d min. %.3f sec." % (m, (tseconds - 60*m))),
-
-        print ']]'
+    def __init__(self):
+        self.start()
 
     def start(self):
         self.stime = timeit.default_timer()
 
-    def end(self, print_time=True):
+    def end(self, print_time=False):
         self.etime = timeit.default_timer()
 
         if print_time:
-            self.display()
+            print(self)
 
-    def __init__(self):
-        self.start()
+    def __str__(self):
+
+        tseconds = self.etime - self.stime
+
+        s = ' [[ elapsed time: '
+        if tseconds < np.power(10.,-6.):
+            s = s + ("%.3f micro-sec." % (tseconds*1000000))
+
+        elif tseconds < np.power(10.,-3.):
+            s = s + ("%.3f milli-sec." % (tseconds*1000))
+
+        elif tseconds < 60.0:
+            s = s + ("%.3f sec." % (tseconds))
+
+        else:
+            m = int(tseconds/ 60.0)
+            s = s + ("%d min. %.3f sec." % (m, (tseconds - 60*m)))
+
+        s = s + ' ]]'
+        return s
+
+    def __repr__(self):
+        return self.__str__()

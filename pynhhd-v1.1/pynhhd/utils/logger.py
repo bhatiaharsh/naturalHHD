@@ -21,11 +21,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from .greens import GreensFunction
-from .poisson import PoissonSolver
-from .structured import StructuredGrid
-from .unstructured import UnstructuredGrid
-from .nHHD import nHHD
+import sys
+import logging
+import inspect
 
-from .utils.timer import Timer
-from .utils.logger import create_logger
+# ------------------------------------------------------------------------------
+# Program Globals
+ROOTLOGGER = logging.getLogger(inspect.getmodule(__name__))
+
+def create_logger(loglevel):
+    '''
+        loglevel  -- log level!
+    '''
+    # log format
+    LOGFORMAT = '%(asctime)s - %(name)s:%(funcName)s:%(lineno)s - %(levelname)s - %(message)s'
+
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setLevel(loglevel)
+    sh.setFormatter(logging.Formatter(LOGFORMAT))
+
+    ROOTLOGGER.addHandler(sh)
+
+# ------------------------------------------------------------------------------

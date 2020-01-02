@@ -21,9 +21,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-import numpy
+import numpy as np
 from scipy import signal, spatial
-from timer import Timer
+import logging
+LOGGER = logging.getLogger(__name__)
+
+from .utils.timer import Timer
+from .greens import GreensFunction
 
 '''
 # ------------------------------------------------------------------------------
@@ -46,9 +50,9 @@ from timer import Timer
 
          --> for unstrucutred points
             'points'      : unstructured points
-                                numpy array of shape (N, dim)
+                                np array of shape (N, dim)
             'pvolumes'    : point volumes for each point
-                                numpy array of shape (N, 1)
+                                np array of shape (N, 1)
 
   2) call prepare()
           this initializes internal datastructures depending upon the mesh.
@@ -57,20 +61,19 @@ from timer import Timer
           solve the Poisson equation on the same domain. If the domain
           changes (e.g., a Lagrangian mesh), create a new object.
 
-  3) call solve(f), where, f is a numpy array defining a scalar field
+  3) call solve(f), where, f is a np array defining a scalar field
 
           for rectlinear grid,     f.shape = grid.shape
           for unstructured points, f.shape = (points.shape[0], 1)
 
 # ------------------------------------------------------------------------------
 '''
-
 class PoissonSolver(object):
 
     # constructor
     def __init__(self, **kwargs):
 
-        args = kwargs.keys()
+        args = list(kwargs.keys())
 
         if ('grid' in args) == ('points' in args):
             raise SyntaxError("Poisson Solver needs either shape of a regular grid or the points in an rectilinear/unstructured grid")
@@ -82,7 +85,7 @@ class PoissonSolver(object):
             raise SyntaxError("Poisson Solver needs point volumes for unstructured points")
 
         # (default) data type
-        self.dtype = numpy.float32
+        self.dtype = np.float32
         if 'dtype' in args:
             self.dtype = kwargs['dtype']
 
@@ -121,65 +124,19 @@ class PoissonSolver(object):
 
         self.ready = False
         if (self.ptype == 'G'):
-            print 'PoissonSolver:', self.dim, 'D grid =', self.gdims, 'with spacings', self.gdx
+            LOGGER.info('PoissonSolver: {}D grid = {} with spacings {}'.format(self.dim, self.gdims, self.gdx))
         elif (self.ptype == 'P'):
-            print 'PoissonSolver', self.dim, 'D points =', self.points.shape
-
-    # --------------------------------------------------------------------------
-    # create the Green's function in appropriate representation
-    # --------------------------------------------------------------------------
-
-    # generate a grid -(N-1) to (N-1) to define distance function
-    #     where N is the size of the original grid
-    def _create_radialGrid(self, verbose):
-
-        mtimer = Timer()
-        if verbose:
-            print '  - creating distance kernel:',
-
-        rdims = tuple(2*d - 1 for d in self.gdims)
-
-        R = numpy.indices(rdims, dtype=self.dtype)
-        for d in xrange(self.dim):
-            R[d] += 1-self.gdims[d]
-            R[d] *= self.gdx[d]
-
-        if self.dim == 1:
-            numpy.absolute(R[0], R[0])
-            R = R[0]
-
-        elif self.dim == 2:
-            numpy.hypot(R[1], R[0], R[0])
-            R = R[0]
-
-            # half of the average grid spacing
-            zval = 0.5 * (self.gdx[0]+self.gdx[1]) / 2.0
-            R[self.gdims[0]-1, self.gdims[1]-1] = zval
-
-        elif self.dim == 3:
-            numpy.hypot(R[2], R[1], R[1])
-            numpy.hypot(R[1], R[0], R[0])
-            R = R[0]
-
-            # half of the average grid spacing
-            zval = 0.5 * (self.gdx[0]+self.gdx[1]+self.gdx[2]) / 3.0
-            R[self.gdims[0]-1, self.gdims[1]-1, self.gdims[2]-1] = zval
-
-        if verbose:
-            print R.shape, R.min(), R.max(),
-            mtimer.end()
-
-        return R
+            LOGGER.info('PoissonSolver: {}D points = {}'.format(self.dim, self.points.shape))
 
     # --------------------------------------------------------------------------
     # scale a function by point volumes for correct integration
     def _scale(self, func):
 
         if self.ptype == 'P':
-            return numpy.multiply(func, self.pvolumes)
+            return np.multiply(func, self.pvolumes)
 
         elif self.ptype == 'G':
-            sfunc = func * numpy.prod(self.gdx)
+            sfunc = func * np.prod(self.gdx)
 
             '''
             # volume of the boundary elements is only half the voxel
@@ -201,15 +158,15 @@ class PoissonSolver(object):
             '''
         return sfunc
 
-    def prepare(self, verbose=False):
+    def prepare(self):
 
         # ----------------------------------------------------------------------
         gtimer = Timer()
-        if verbose:
-            print '\nInitializing Poisson solver, type =', self.stype
+        LOGGER.debug('Initializing Poisson solver, type = {}'.format(self.stype))
 
         # ----------------------------------------------------------------------
         # generate a grid to store pairwise distances to store Green's function
+        GComputer = GreensFunction(self.dim, self.dtype)
         self.G = None                      # definition depends upon solver type
 
         # ----------------------------------------------------------------------
@@ -217,7 +174,7 @@ class PoissonSolver(object):
         if self.stype == 'F':
 
             if self.ptype == 'G':
-                self.G = self._create_radialGrid(verbose)
+                self.G = GComputer.create_grid(self.gdims, self.gdx)
 
             elif self.ptype == 'P':
                 raise SyntaxError('Frequncy solver not supported for unstructured points')
@@ -234,63 +191,25 @@ class PoissonSolver(object):
                 #self.G = self.create_points(verbose)
 
             elif self.ptype == 'P':
-                # for 1D points, add an extra axis
-                if (self.dim == 1) and (len(self.points.shape) == 1):
-                    self.points = self.points[:,numpy.newaxis]
-
-                # create pairwise distance matrix now
-                ltimer = Timer()
-                self.G = spatial.distance.cdist(self.points, self.points)
-
-                # TODO: use a good approximation here
-                zval = numpy.power(10.0, -10.0)
-                self.G += zval * numpy.identity(self.G.shape[0])
-
-                if verbose:
-                    print '  - created pairwise distance matrix:', self.G.shape, self.G.min(), self.G.max(),
-                    ltimer.end()
-
-        # ----------------------------------------------------------------------
-        # compute the Green's function
-        ltimer = Timer()
-        if verbose:
-            print '  - computing the Green\'s function:',
-
-        if self.dim == 1:
-            numpy.multiply(self.G, 0.5, self.G)
-
-        elif self.dim == 2:
-            numpy.log(self.G, self.G)
-            numpy.multiply(self.G, (0.5 / numpy.pi), self.G)
-
-        elif self.dim == 3:
-            numpy.reciprocal(self.G, self.G)
-            numpy.multiply(self.G, (-0.25 / numpy.pi), self.G)
-
-        if verbose:
-            print self.G.shape, self.G.min(), self.G.max(),
-            ltimer.end()
+                self.G = GComputer.create_points(self.points)
 
         # ----------------------------------------------------------------------
         self.ready = True
-
-        if verbose:
-            print 'Poisson solver initialized',
-            gtimer.end()
+        gtimer.end()
+        LOGGER.debug('Poisson solver initialized! took {}'.format(gtimer))
 
     # --------------------------------------------------------------------------
     # compute the integral solution
     # --------------------------------------------------------------------------
-    def solve(self, f, verbose=False):
+    def solve(self, f):
 
         if not self.ready:
-            init(verbose)
+            init()
 
         fshape = f.shape
 
         gtimer = Timer()
-        if verbose:
-            print '\nSolving Poisson Eq.'
+        LOGGER.debug('Solving Poisson equation')
 
         # ----------------------------------------------------------------------
         # regular grid
@@ -298,13 +217,12 @@ class PoissonSolver(object):
 
             #if (self.gdims - fshape).any():
             if self.gdims != fshape:
-                print self.gdims, fshape
-                raise ValueError("Shape of function should match shape of grid")
+                raise ValueError("Shape of function ({}) should match shape of grid ({})".format(fshape, self.gdims))
 
             # convolution in frequency domain
             if self.stype == 'F':
                 p = signal.fftconvolve(f, self.G, mode='same')
-                numpy.multiply(p, numpy.prod(self.gdx), p)
+                np.multiply(p, np.prod(self.gdx), p)
 
             # convolution in spatial domain
             elif self.stype == 'S':
@@ -321,17 +239,15 @@ class PoissonSolver(object):
             # convolution in spatial domain
                 # Dec 13, 2017 -- pre scaling works for unstructured grids!
             if self.stype == 'S':
-                p = numpy.multiply(f, self.pvolumes)
-                numpy.dot(self.G, p, p)
-                #numpy.multiply(p, self.pvolumes, p)
+                p = np.multiply(f, self.pvolumes)
+                np.dot(self.G, p, p)
+                #np.multiply(p, self.pvolumes, p)
 
             elif self.stype == 'F':
                 raise SyntaxError('Frequncy solver not supported for unstructured points')
 
         # ----------------------------------------------------------------------
-        if verbose:
-            print 'Poisson solver finished',
-            gtimer.end()
-
+        gtimer.end()
+        LOGGER.debug('Poisson solver finished! took {}'.format(gtimer))
         return p
 # ------------------------------------------------------------------------------
