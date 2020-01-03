@@ -28,8 +28,7 @@ LOGGER = logging.getLogger(__name__)
 from .poisson import PoissonSolver
 from .structured import StructuredGrid
 from .unstructured import UnstructuredGrid
-from .StructuredSphericalGrid import StructuredSphericalGrid
-import .nHHD_utils as nutils
+from .spherical import StructuredSphericalGrid
 
 # ---------------------------------------------------------------------------
 class nHHD(object):
@@ -72,7 +71,7 @@ class nHHD(object):
             self.psolver.prepare(True)
 
     # create the 3-component decomposition
-    def decompose(self, vfield, verbose=0, div=None, curlw=None, num_cores=32, tuning_param=0.0625):
+    def decompose(self, vfield, div=None, curlw=None, num_cores=32, tuning_param=0.0625):
 
         if vfield.shape[-1] != self.dim:
             raise ValueError("nHHD.decompose requires a valid-dimensional vector field")
@@ -84,7 +83,7 @@ class nHHD(object):
         if self.dim == 2:
 
             # compute div curl
-            if numpy.all(div==None) and numpy.all(curlw==None):
+            if np.all(div==None) and np.all(curlw==None):
                 # calculate div and curl if they are not known
                 (self.div, self.curlw) = self.mesh.divcurl(vfield)
             else:
@@ -98,23 +97,14 @@ class nHHD(object):
             LOGGER.debug('curl = {} {} {}'.format(self.curlw.shape, self.curlw.min(), self.curlw.max()))
 
             # compute potentials
-            if isinstance(self.mesh, StructuredSphericalGrid):
-                self.nD, self.nRu = nutils.solve(numpy.stack([self.div,self.curlw],axis=-1),
-                                    self.psolver.lat, self.psolver.lon, self.psolver.gdx,
-                                    num_cores=num_cores, tuning_param=tuning_param)
+            self.nD, self.nRu = self.psolver.solve([self.div, self.curlw],
+                                                   num_cores=num_cores,
+                                                   tuning_param=tuning_param)
 
-                if verbose > 0:
-                    print('nD =', self.nD.shape, self.nD.min(), self.nD.max())
-                    print('nR =', self.nRu.shape, self.nRu.min(), self.nRu.max())
+            LOGGER.debug('D    = {} {} {}'.format(self.nD.shape, self.nD.min(), self.nD.max()))
+            LOGGER.debug('Ru   = {} {} {}'.format(self.nRu.shape, self.nRu.min(), self.nRu.max()))
 
-            else:
-                self.nD = self.psolver.solve(self.div, verbose > 0) #1)
-                LOGGER.debug('D    = {} {} {}'.format(self.nD.shape, self.nD.min(), self.nD.max()))
 
-                self.nRu = self.psolver.solve(self.curlw, verbose > 0) #1)
-                LOGGER.debug('Ru   = {} {} {}'.format(self.nRu.shape, self.nRu.min(), self.nRu.max()))
-            else:
-                self.nD, self.nRu = nutils.solve(numpy.stack([self.div,self.curlw],axis=-1),self.psolver.lat,self.psolver.lon,self.psolver.gdx,num_cores=num_cores,tuning_param=tuning_param)
             # compute fields as gradients of potentials
             self.d = self.mesh.gradient(self.nD)
             self.r = self.mesh.rotated_gradient(self.nRu)
@@ -123,7 +113,6 @@ class nHHD(object):
             LOGGER.debug('r    = {} {} {}'.format(self.r.shape, self.r.min(), self.r.max()))
 
         else:
-
             # compute div curl
             (self.div, self.curlu, self.curlv, self.curlw) = self.mesh.divcurl(vfield)
 
@@ -133,19 +122,14 @@ class nHHD(object):
             LOGGER.debug('curlw = {} {} {}'.format(self.curlw.shape, self.curlw.min(), self.curlw.max()))
 
             # compute potentials
-            self.nD = self.psolver.solve(self.div)
-            LOGGER.debug('D    = {} {} {}'.format(self.nD.shape, self.nD.min(), self.nD.max()))
-
-            self.nRu = self.psolver.solve(self.curlu)
+            self.nD, self.nRu, self.nRv, self.nRw = self.psolver.solve([self.div, self.curlu, self.curlv, self.curlw])
             self.nRu *= -1.0
-            LOGGER.debug('Ru    = {} {} {}'.format(self.nRu.shape, self.nRu.min(), self.nRu.max()))
-
-            self.nRv = self.psolver.solve(self.curlv, verbose > 0)
             self.nRv *= -1.0
-            LOGGER.debug('Rv    = {} {} {}'.format(self.nRv.shape, self.nRv.min(), self.nRv.max()))
-
-            self.nRw = self.psolver.solve(self.curlw, verbose > 0)
             self.nRw *= -1.0
+
+            LOGGER.debug('D    = {} {} {}'.format(self.nD.shape, self.nD.min(), self.nD.max()))
+            LOGGER.debug('Ru    = {} {} {}'.format(self.nRu.shape, self.nRu.min(), self.nRu.max()))
+            LOGGER.debug('Rv    = {} {} {}'.format(self.nRv.shape, self.nRv.min(), self.nRv.max()))
             LOGGER.debug('Rw    = {} {} {}'.format(self.nRw.shape, self.nRw.min(), self.nRw.max()))
 
             # compute divergent field as gradient of D potential

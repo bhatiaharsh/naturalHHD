@@ -25,6 +25,7 @@ from .greens import GreensFunction
 from .poisson import PoissonSolver
 from .structured import StructuredGrid
 from .unstructured import UnstructuredGrid
+from .spherical import StructuredSphericalGrid
 from .nHHD import nHHD
 
 from .utils.timer import Timer

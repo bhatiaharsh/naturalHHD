@@ -60,7 +60,6 @@ class StructuredGrid(object):
     # --------------------------------------------------------------------------
     def divcurl(self, vfield):
 
-        #if (vfield.shape[-1] != self.dim) or (vfield.shape[0:self.dim] - self.dims).any():
         if (vfield.shape[-1] != self.dim) or (vfield.shape[0:self.dim] != self.dims):
             raise ValueError("Dimensions of vector field should match that of the grid")
 

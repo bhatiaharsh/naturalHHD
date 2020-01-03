@@ -21,7 +21,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-import numpy
+import numpy as np
 from scipy import spatial
 
 import logging
@@ -38,49 +38,52 @@ class GreensFunction(object):
         self.dim = dim
         self.dtype = dtype
 
+    # compute the free-space Green's function
+    # on a given set of coordinates!
     def compute(self, x):
 
         if self.dim == 1:
-            numpy.absolute(x,x)
-            numpy.multiply(x, 0.5, x)
+            np.absolute(x, x)
+            np.multiply(x, 0.5, x)
 
         elif self.dim == 2:
-            numpy.log(x,x)
-            numpy.multiply(x, (0.5 / numpy.pi), x)
+            np.log(x, x)
+            np.multiply(x, (0.5 / np.pi), x)
 
         elif self.dim == 3:
-            numpy.reciprocal(x, x)
-            numpy.multiply(x, (-0.25 / numpy.pi), x)
+            np.reciprocal(x, x)
+            np.multiply(x, (-0.25 / np.pi), x)
 
         return x
 
-    # create green's function on a grid
+
+    # create green's function on a regular grid
     def create_grid(self, X, dx):
 
-        LOGGER.info('Computing {}D Greens function'.format(self.dim))
+        LOGGER.info('Computing {}D Greens function on a regular grid'.format(self.dim))
         gtimer = Timer()
         ltimer = Timer()
 
         # ----------------------------------------------------------------------
         # create a half radial-grid
         if self.dim == 1:
-            x = numpy.indices([X[0]], dtype=self.dtype)[0]
-            numpy.multiply(x, dx, x)
+            x = np.indices([X[0]], dtype=self.dtype)[0]
+            np.multiply(x, dx, x)
 
         elif self.dim == 2:
-            y, x = numpy.indices(X, dtype=self.dtype)
-            numpy.multiply(y, dx[0], y)
-            numpy.multiply(x, dx[1], x)
-            numpy.hypot(y, x, x)
+            y, x = np.indices(X, dtype=self.dtype)
+            np.multiply(y, dx[0], y)
+            np.multiply(x, dx[1], x)
+            np.hypot(y, x, x)
             x[0,0] = 0.5 * ((dx[0]+dx[1])/2.0)
 
         elif self.dim == 3:
-            z, y, x = numpy.indices(X, dtype=self.dtype)
-            numpy.multiply(z, dx[0], z)
-            numpy.multiply(y, dx[1], y)
-            numpy.multiply(x, dx[2], x)
-            numpy.hypot(y, x, x)
-            numpy.hypot(z, x, x)
+            z, y, x = np.indices(X, dtype=self.dtype)
+            np.multiply(z, dx[0], z)
+            np.multiply(y, dx[1], y)
+            np.multiply(x, dx[2], x)
+            np.hypot(y, x, x)
+            np.hypot(z, x, x)
             x[0,0,0] = 0.5 * ((dx[0]+dx[1]+dx[2])/3.0)
 
         ltimer.end()
@@ -98,25 +101,25 @@ class GreensFunction(object):
         # create the full grid
         ltimer.start()
         if self.dim == 1:
-            fx = numpy.flip(x, 0)
-            x = numpy.concatenate((fx[:-1],x), axis=0)
+            fx = np.flip(x, 0)
+            x = np.concatenate((fx[:-1],x), axis=0)
 
         elif self.dim == 2:
-            fx = numpy.flip(x, 1)
-            x = numpy.concatenate((fx[:,:-1],x), axis=1)
+            fx = np.flip(x, 1)
+            x = np.concatenate((fx[:,:-1],x), axis=1)
 
-            fx = numpy.flip(x, 0)
-            x = numpy.concatenate((fx[:-1,:],x), axis=0)
+            fx = np.flip(x, 0)
+            x = np.concatenate((fx[:-1,:],x), axis=0)
 
         elif self.dim == 3:
-            fx = numpy.flip(x, 2)
-            x = numpy.concatenate((fx[:,:,:-1],x), axis=2)
+            fx = np.flip(x, 2)
+            x = np.concatenate((fx[:,:,:-1],x), axis=2)
 
-            fx = numpy.flip(x, 1)
-            x = numpy.concatenate((fx[:,:-1,:],x), axis=1)
+            fx = np.flip(x, 1)
+            x = np.concatenate((fx[:,:-1,:],x), axis=1)
 
-            fx = numpy.flip(x, 0)
-            x = numpy.concatenate((fx[:-1,:,:],x), axis=0)
+            fx = np.flip(x, 0)
+            x = np.concatenate((fx[:-1,:,:],x), axis=0)
 
         ltimer.end()
         gtimer.end()
@@ -132,7 +135,7 @@ class GreensFunction(object):
         ltimer = Timer()
         # for 1D points, add an extra axis
         if (self.dim == 1) and (len(P.shape) == 1):
-            P = P[:,numpy.newaxis]
+            P = P[:,np.newaxis]
 
         # create pairwise distance matrix now
         ltimer = Timer()
@@ -144,8 +147,8 @@ class GreensFunction(object):
         ltimer.start()
         # TODO: use a good approximation here
         # TODO: also avoid multiplying with identity
-        zval = numpy.power(10.0, -10.0)
-        x += zval * numpy.identity(x.shape[0])
+        zval = np.power(10.0, -10.0)
+        x += zval * np.identity(x.shape[0])
 
         ltimer.end()
         LOGGER.debug('adjusting self-distances took {}'.format(ltimer))
@@ -154,3 +157,33 @@ class GreensFunction(object):
         gtimer.end()
         LOGGER.info('Computing {}D Greens function took {}'.format(self.dim, gtimer))
         return x
+
+
+    # create green's function on a spherical grid
+    # Aleksi's function is structured differently
+    # putting this to its right place without changing the signature
+    # copied from nhhd_utils.py/create_radialGrid_2
+    @staticmethod
+    def create_sphericalGrid(rlat, rlon, j, i):
+
+        Delta_lon    = abs(rlon[j,i] - rlon)
+        cosDelta_lon = np.cos(Delta_lon)
+        sinDelta_lon = np.sin(Delta_lon)
+
+        coslat1      = np.cos(rlat[j,i])
+        coslat2      = np.cos(rlat)
+        sinlat1      = np.sin(rlat[j,i])
+        sinlat2      = np.sin(rlat)
+
+        num          = np.sqrt((coslat2*sinDelta_lon)**2 + (coslat1*sinlat2 - sinlat1*coslat2*cosDelta_lon)**2)
+        den          = sinlat1*sinlat2 + coslat1*coslat2*cosDelta_lon
+        gamma        = np.arctan2(num,den)
+
+
+        # Compute Green's function
+        #G = -np.log(0.5*(1 - np.cos(gamma)))/(4*np.pi)
+        G = -np.log(np.sin(0.5*gamma))/(2*np.pi)
+        G[j,i] = 0
+        #
+
+        return G
