@@ -25,10 +25,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 greens.py
     Free-space Green's function for the natural HHD, torch backend.
 
-    NOTE: only the regular-grid kernel (create_grid) is implemented so far.
-    The unstructured-point (create_points) and spherical-grid
-    (create_sphericalGrid) Green's functions are planned but not yet ported
-    from pynhhd-v1.1 -- see the project plan for delivery order.
+    NOTE: the spherical-grid Green's function (create_sphericalGrid) is
+    planned but not yet ported from pynhhd-v1.1 -- see the project plan
+    for delivery order.
 '''
 
 import math
@@ -140,3 +139,49 @@ class GreensFunction(object):
         LOGGER.info('Computing %dD Greens function took %s', self.dim, gtimer)
 
         return full
+
+    # --------------------------------------------------------------------
+    # build the full N x N Green's-function matrix for a set of unstructured
+    # points (currently 2D only, matching UnstructuredGrid).
+    def create_points(self, points, pvolumes):
+        '''
+        points:   (N, dim) tensor of point coordinates
+        pvolumes: (N,) tensor of per-point cell areas (e.g. Voronoi-dual
+                  areas), used only to derive a principled self-term below
+                  -- NOT applied as a weight here (that happens in
+                  PoissonSolver, matching pynhhd-v1.1's pre-scaling).
+
+        Self-term: instead of pynhhd-v1.1's crude `+1e-10` epsilon on the
+        diagonal (which, combined with float32, makes 1/eps or log(eps)
+        blow up far more than it does at numpy's float64), each point's
+        self-contribution is modeled as the analytic average of the
+        free-space Green's function over a disk of area equal to that
+        point's own cell (pvolumes[i]), rather than a point sample at a
+        near-zero distance:
+            mean_{disk radius R} log(r)   = log(R) - 1/2   (2D)
+        which we fold back into `compute()` by using an *effective*
+        self-distance d_eff = R * exp(-1/2), so that compute(d_eff) equals
+        that analytic average exactly (for dim=3, the equivalent effective
+        radius using the mean of 1/r over a ball is d_eff = (2/3) R, not
+        currently used since unstructured 3D is unimplemented).
+        '''
+        if self.dim != 2:
+            raise NotImplementedError('GreensFunction.create_points currently only supports dim=2')
+
+        LOGGER.info('Computing %dD Greens function for %d unstructured points', self.dim, points.shape[0])
+        gtimer = Timer(device=self.device)
+
+        points = points.to(dtype=self.dtype, device=self.device)
+        pvolumes = pvolumes.to(dtype=self.dtype, device=self.device)
+
+        dist = torch.cdist(points, points, p=2)
+
+        radii = torch.sqrt(pvolumes / math.pi)
+        self_dist = radii * math.exp(-0.5)
+        dist.diagonal().copy_(self_dist)  # cdist's true diagonal is 0
+
+        G = self.compute(dist)
+
+        gtimer.end()
+        LOGGER.info('Computing %dD Greens function took %s', self.dim, gtimer)
+        return G

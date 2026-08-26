@@ -25,10 +25,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 nhhd.py
     Top-level orchestrator for the natural HHD, torch backend.
 
-    NOTE: only the regular-grid ('grid') path is implemented so far.
-    Unstructured-point ('points') and spherical-grid ('sphericalgrid')
-    inputs are planned but not yet ported from pynhhd-v1.1 -- see the
-    project plan for delivery order.
+    Supports regular grids ('grid'+'spacings') and unstructured triangular
+    meshes ('points', optionally 'simplices'). NOTE: the spherical-grid
+    path ('sphericalgrid') is planned but not yet ported from pynhhd-v1.1
+    -- see the project plan for delivery order. Unstructured meshes are
+    currently 2D only (see unstructured.py).
 
     No differentiable path: every public entry point runs under
     torch.no_grad() (the user's decomposition never needs gradients through
@@ -50,8 +51,9 @@ LOGGER = logging.getLogger(__name__)
 
 import torch
 
-from .poisson import PoissonSolver
+from .poisson import PoissonSolver, DEFAULT_MAX_POINTS
 from .structured import StructuredGrid
+from .unstructured import UnstructuredGrid
 from .utils.device import resolve_dtype, resolve_device, as_tensor, to_output, ensure_batched, restore_batch
 
 
@@ -62,26 +64,50 @@ DecompositionResult = namedtuple(
 
 class nHHD(object):
 
-    def __init__(self, grid=None, spacings=None, dtype=None, device=None):
+    def __init__(self, grid=None, spacings=None, points=None, simplices=None,
+                 dtype=None, device=None, max_points=DEFAULT_MAX_POINTS):
         '''
-        Currently supported: regular grids only.
+        Regular grid:
             grid:     tuple of grid dimensions (Y, X) or (Z, Y, X)
             spacings: tuple of grid spacings (dy, dx) or (dz, dy, dx)
-        '''
 
-        if grid is None:
+        Unstructured (triangular) mesh, 2D only:
+            points:    (N, 2) vertex coordinates
+            simplices: optional (T, 3) triangle vertex indices; computed
+                       via Delaunay triangulation if not given
+            max_points: size guard on the dense N x N Green's matrix (see
+                       poisson.py) -- defaults to poisson.DEFAULT_MAX_POINTS
+        '''
+        is_grid = grid is not None
+        is_points = points is not None
+
+        if is_grid == is_points:
             raise SyntaxError(
-                'nHHD Solver needs the shape of a regular grid (points/sphericalgrid '
-                'inputs are not yet implemented in pynhhd)')
-        if spacings is None:
-            raise SyntaxError('nHHD needs spacings for regular grid')
+                'nHHD Solver needs either the shape of a regular grid or the points of an '
+                'unstructured mesh (sphericalgrid input is not yet implemented in pynhhd)')
 
         self.dtype = resolve_dtype(dtype)
         self.device = resolve_device(device)
 
-        self.mesh = StructuredGrid(grid=grid, spacings=spacings, dtype=self.dtype, device=self.device)
-        self.psolver = PoissonSolver(grid=self.mesh.dims, spacings=self.mesh.dx,
-                                      dtype=self.dtype, device=self.device)
+        if is_grid:
+            if spacings is None:
+                raise SyntaxError('nHHD needs spacings for regular grid')
+
+            self.mesh = StructuredGrid(grid=grid, spacings=spacings, dtype=self.dtype, device=self.device)
+            self.psolver = PoissonSolver(grid=self.mesh.dims, spacings=self.mesh.dx,
+                                          dtype=self.dtype, device=self.device)
+            self._mesh_type = 'grid'
+            self._vfield_unbatched_ndim = self.mesh.dim + 1
+            self._scalar_unbatched_ndim = self.mesh.dim
+
+        else:
+            self.mesh = UnstructuredGrid(vertices=points, simplices=simplices,
+                                          dtype=self.dtype, device=self.device)
+            self.psolver = PoissonSolver(points=self.mesh.vertices, pvolumes=self.mesh.pvolumes,
+                                          dtype=self.dtype, device=self.device, max_points=max_points)
+            self._mesh_type = 'points'
+            self._vfield_unbatched_ndim = 2   # (nsimplices, dim)
+            self._scalar_unbatched_ndim = 1   # (nvertices,)
 
         self.dim = self.mesh.dim
         if self.dim != 2 and self.dim != 3:
@@ -93,8 +119,10 @@ class nHHD(object):
     @torch.no_grad()
     def decompose(self, vfield, div=None, curlw=None):
         '''
-        vfield: numpy array or torch tensor, shape (*grid_dims, dim) for a
-        single field, or (B, *grid_dims, dim) for a batch of B fields.
+        vfield: numpy array or torch tensor.
+            regular grid:        shape (*grid_dims, dim) or (B, *grid_dims, dim)
+            unstructured mesh:   shape (nsimplices, dim) or (B, nsimplices, dim)
+                                  (a piecewise-constant field defined per triangle)
 
         div, curlw: optionally supply the divergence/2D-curl directly
         instead of having them computed from vfield (e.g. if your data
@@ -107,7 +135,7 @@ class nHHD(object):
         '''
 
         vfield_t, was_numpy = as_tensor(vfield, self.dtype, self.device)
-        vfield_t, was_batched = ensure_batched(vfield_t, unbatched_ndim=self.dim + 1)
+        vfield_t, was_batched = ensure_batched(vfield_t, unbatched_ndim=self._vfield_unbatched_ndim)
 
         if vfield_t.shape[-1] != self.dim:
             raise ValueError('nHHD.decompose requires a {}-dimensional vector field'.format(self.dim))
@@ -119,10 +147,10 @@ class nHHD(object):
             if div is None and curlw is None:
                 div_t, curl_t = self.mesh.divcurl(vfield_t)
             else:
-                div_t, was_numpy_div = as_tensor(div, self.dtype, self.device)
+                div_t, _ = as_tensor(div, self.dtype, self.device)
                 curl_t, _ = as_tensor(curlw, self.dtype, self.device)
-                div_t, _ = ensure_batched(div_t, unbatched_ndim=self.dim)
-                curl_t, _ = ensure_batched(curl_t, unbatched_ndim=self.dim)
+                div_t, _ = ensure_batched(div_t, unbatched_ndim=self._scalar_unbatched_ndim)
+                curl_t, _ = ensure_batched(curl_t, unbatched_ndim=self._scalar_unbatched_ndim)
 
             nD, nRu = self.psolver.solve([div_t, curl_t])
 
@@ -130,7 +158,7 @@ class nHHD(object):
             r = self.mesh.rotated_gradient(nRu)
             potentials = (nD, nRu)
 
-        else:  # self.dim == 3
+        else:  # self.dim == 3 (regular grid only -- unstructured meshes are 2D-only, see unstructured.py)
 
             div_t, curlu_t, curlv_t, curlw_t = self.mesh.divcurl(vfield_t)
 
