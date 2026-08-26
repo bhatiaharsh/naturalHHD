@@ -40,8 +40,10 @@ class nHHD(object):
 
         if not ('grid' in args) and not ('points' in args) and not ('sphericalgrid' in args):
             raise SyntaxError("nHHD Solver needs either shape of a regular grid or the points in an rectilinear/unstructured grid")
-        if (('grid' in args) != ('spacings' in args)) and (('sphericalgrid' in args) != ('spacings' in args)):
+        if ('grid' in args) and not ('spacings' in args):
             raise SyntaxError("nHHD needs spacings for regular grid")
+        if ('sphericalgrid' in args) and not ('spacings' in args):
+            raise SyntaxError("nHHD needs spacings for spherical grid")
 
         if 'grid' in args:
             self.mesh = StructuredGrid(grid=kwargs['grid'], spacings=kwargs['spacings'])

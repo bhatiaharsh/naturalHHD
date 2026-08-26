@@ -87,7 +87,7 @@ class StructuredGrid(object):
             dwdz, dwdy, dwdx = np.gradient(vfield[:,:,:,2], self.dx[0], self.dx[1], self.dx[2])
 
             np.add(dudx, dvdy, dudx)
-            np.add(dudx, dvdz, dudx)
+            np.add(dudx, dwdz, dudx)
 
             np.subtract(dwdy, dvdz, dwdy)
             np.subtract(dudz, dwdx, dudz)
