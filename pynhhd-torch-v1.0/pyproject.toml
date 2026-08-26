@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pynhhd"
+version = "2.0.0"
+description = "PyTorch implementation of the natural Helmholtz-Hodge decomposition (GPU-accelerated, batched)."
+readme = "README.md"
+authors = [{ name = "Harsh Bhatia", email = "bhatia4@llnl.gov" }]
+license = { text = "BSD License" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+]
+dependencies = [
+    "torch>=2.0",
+    "numpy>=1.24",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/bhatiaharsh/naturalHHD"
+
+[tool.setuptools.packages.find]
+include = ["pynhhd*"]
