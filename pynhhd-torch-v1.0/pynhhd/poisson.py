@@ -25,7 +25,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 poisson.py
     Poisson solver for the natural HHD, torch backend.
 
-    Two modes:
+    Three modes:
       - regular grid ('grid'+'spacings'): FFT-based convolution
         (torch.fft.rfftn/irfftn, replacing scipy.signal.fftconvolve), the
         kernel's FFT cached once at construction.
@@ -34,9 +34,14 @@ poisson.py
         memory on ANY device (GPUs often have less memory than CPU RAM, so
         this is not merely a CPU-era limitation) -- `max_points` guards
         against silently attempting an allocation that will OOM.
-
-    NOTE: the spherical-grid solver is planned but not yet ported from
-    pynhhd-v1.1 -- see the project plan for delivery order.
+      - spherical grid ('sphericalgrid'+'spacings'+'lat'+'lon'): the
+        longitude-offset kernel tensor (ny, ny, nx) from greens.py, FFT'd
+        once along the longitude axis at construction. Each solve() is then
+        an FFT + a batched einsum contraction over source latitude rows +
+        an inverse FFT -- replacing pynhhd-v1.1's O((ny*nx)^2) per-latitude
+        joblib-multiprocessing loop with an O(ny^2 * nx log nx),
+        GPU/batch-friendly contraction. See greens.py's
+        create_sphericalGrid_kernel for the reformulation's derivation.
 
     Precompute (building/caching the Green's-function kernel or matrix) is
     mandatory constructor-time work, not lazy -- this deliberately avoids
@@ -49,6 +54,7 @@ poisson.py
     nhhd.py's decompose(). No differentiable path is supported or maintained.
 '''
 
+import math
 import logging
 LOGGER = logging.getLogger(__name__)
 
@@ -64,6 +70,7 @@ DEFAULT_MAX_POINTS = 20000
 class PoissonSolver(object):
 
     def __init__(self, grid=None, spacings=None, points=None, pvolumes=None,
+                 sphericalgrid=None, lat=None, lon=None, r=None, tuning_param=0.0625,
                  dtype=None, device=None, max_points=DEFAULT_MAX_POINTS):
         '''
         Regular grid mode:
@@ -77,18 +84,25 @@ class PoissonSolver(object):
             max_points: refuse to build the dense N x N Green's matrix
                       above this many points (O(N^2) memory) rather than
                       risk silently exhausting device memory.
-        '''
-        is_grid = grid is not None
-        is_points = points is not None
 
-        if is_grid == is_points:
-            raise SyntaxError('PoissonSolver needs exactly one of (grid, spacings) or (points, pvolumes)')
+        Spherical-grid mode:
+            sphericalgrid: tuple of grid dimensions (ny, nx)
+            spacings:      tuple of grid spacings in DEGREES (dlat, dlon)
+            lat, lon:      1D or 2D (ny, nx) lat/lon arrays in degrees
+            r:             planet radius in meters (default: Earth)
+            tuning_param:  self-term integration window size as a fraction
+                      of one grid cell (see greens.py's create_sphericalGrid_kernel)
+        '''
+        modes = [grid is not None, points is not None, sphericalgrid is not None]
+        if sum(modes) != 1:
+            raise SyntaxError('PoissonSolver needs exactly one of (grid, spacings), '
+                               '(points, pvolumes), or (sphericalgrid, spacings, lat, lon)')
 
         self.dtype = resolve_dtype(dtype)
         self.device = resolve_device(device)
         self.ready = False
 
-        if is_grid:
+        if grid is not None:
             if spacings is None:
                 raise SyntaxError('PoissonSolver needs spacings for a regular grid')
 
@@ -105,7 +119,7 @@ class PoissonSolver(object):
             LOGGER.info('PoissonSolver: %dD regular grid = %s with spacings = %s',
                          self.dim, self.gdims, self.gdx)
 
-        else:
+        elif points is not None:
             if pvolumes is None:
                 raise SyntaxError('PoissonSolver needs pvolumes for unstructured points')
 
@@ -127,6 +141,30 @@ class PoissonSolver(object):
                         self.points.shape[0] ** 2 * self.dtype.itemsize / 1e9, self.max_points))
 
             LOGGER.info('PoissonSolver: %dD unstructured points = %s', self.dim, tuple(self.points.shape))
+
+        else:
+            if spacings is None or lat is None or lon is None:
+                raise SyntaxError('PoissonSolver needs spacings, lat, and lon for a spherical grid')
+
+            self.ptype = 'S'
+            self.gdims = tuple(int(g) for g in sphericalgrid)
+            self.gdx = tuple(float(d) for d in spacings)
+            self.dim = len(self.gdims)
+            self.r = float(r) if r is not None else 6371e3
+            self.tuning_param = tuning_param
+
+            if self.dim != 2:
+                raise ValueError('PoissonSolver (spherical) currently only supports 2D grids')
+            if self.dim != len(self.gdx):
+                raise ValueError('Dimensions of spacings should match that of the grid')
+
+            lat_t, _ = as_tensor(lat, self.dtype, self.device)
+            lon_t, _ = as_tensor(lon, self.dtype, self.device)
+            self.latv = lat_t[:, 0] if lat_t.dim() == 2 else lat_t
+            self.lonv = lon_t[0, :] if lon_t.dim() == 2 else lon_t
+
+            LOGGER.info('PoissonSolver: %dD spherical grid = %s with spacings = %s (degrees)',
+                         self.dim, self.gdims, self.gdx)
 
     # --------------------------------------------------------------------
     @torch.no_grad()
@@ -156,8 +194,19 @@ class PoissonSolver(object):
             # of the field size.
             self._same_start = tuple((k - 1) // 2 for k in self._G_shape)
 
-        else:  # self.ptype == 'P'
+        elif self.ptype == 'P':
             self._G = gcomp.create_points(self.points, self.pvolumes)
+
+        else:  # self.ptype == 'S'
+            kernel = gcomp.create_sphericalGrid_kernel(self.latv, self.lonv, r=self.r,
+                                                         tuning_param=self.tuning_param)
+            self._kernel_fft = torch.fft.rfft(kernel, dim=-1)  # (ny, ny, nfreq)
+
+            rdlat = math.radians(self.gdx[0])
+            rdlon = math.radians(self.gdx[1])
+            rlat = torch.deg2rad(self.latv)
+            # per-source-row cell area weight (dxy in pynhhd-v1.1's _solve_spherical)
+            self._dxy = (self.r ** 2) * rdlat * rdlon * torch.cos(rlat)  # (ny,)
 
         self.ready = True
         gtimer.end()
@@ -205,12 +254,59 @@ class PoissonSolver(object):
         # p = G @ weighted, batched over any leading dims: (B, N) x (N, N)^T -> (B, N)
         return torch.matmul(weighted, self._G.T)
 
+    @torch.no_grad()
+    def _solve_one_spherical(self, f):
+        '''
+        Reproduces pynhhd-v1.1's roll-based sum exactly:
+            p[j,i] = sum_k sum_c func[k,c] * G_j(k, (c-i) mod nx) * dxy[k]
+                   = sum_k sum_d func[k,(i+d) mod nx] * K[j,k,d] * dxy[k]
+        (substituting d = (c-i) mod nx), which is a circular CORRELATION of
+        func[k,:] with K[j,k,:] -- NOT a circular convolution -- summed over
+        source-latitude rows k. The two coincide only when K[j,k,:] happens
+        to be symmetric under the circular index reversal d -> (nx-d) mod nx,
+        which holds for a genuinely global (360-degree-spanning) longitude
+        grid but not in general (e.g. a regional grid spanning <360 degrees
+        in longitude) -- so this must be implemented as a correlation to
+        match pynhhd-v1.1 for any grid, not just global ones. Via the
+        correlation theorem, circular correlation is
+        IFFT(FFT(func) * conj(FFT(K))), i.e. the same contraction as a
+        convolution but with the kernel's FFT conjugated.
+        '''
+
+        if tuple(f.shape[-2:]) != self.gdims:
+            raise ValueError('Shape of function ({}) should match shape of grid ({}) '
+                              'in its trailing 2 dims'.format(tuple(f.shape), self.gdims))
+
+        f = f.to(dtype=self.dtype, device=self.device)
+        batch_shape = f.shape[:-2]
+
+        weighted = f * self._dxy.unsqueeze(-1)  # (*batch, ny, nx); broadcasts regardless of batch rank
+
+        F_fft = torch.fft.rfft(weighted, dim=-1)  # (*batch, ny, nfreq)
+        nfreq = F_fft.shape[-1]
+
+        # merge any leading batch dims into one (so this also works correctly
+        # for a fully unbatched call, matching _solve_one_grid/_solve_one_points'
+        # handling of batch_shape == ()), contract over source latitude k, then
+        # restore the original batch shape
+        F_fft_flat = F_fft.reshape(-1, self.gdims[0], nfreq)
+        P_fft_flat = torch.einsum('jkf,bkf->bjf', self._kernel_fft.conj(), F_fft_flat)
+        P_fft = P_fft_flat.reshape(*batch_shape, self.gdims[0], nfreq)
+
+        p = torch.fft.irfft(P_fft, n=self.gdims[1], dim=-1)  # (*batch, ny, nx)
+        return p
+
     def _solve_one(self, f):
         if not self.ready:
             raise RuntimeError('PoissonSolver.prepare() must be called before solve()')
 
         gtimer = Timer(device=self.device)
-        p = self._solve_one_grid(f) if self.ptype == 'G' else self._solve_one_points(f)
+        if self.ptype == 'G':
+            p = self._solve_one_grid(f)
+        elif self.ptype == 'P':
+            p = self._solve_one_points(f)
+        else:
+            p = self._solve_one_spherical(f)
         gtimer.end()
         LOGGER.debug('Poisson solver finished! took %s', gtimer)
         return p

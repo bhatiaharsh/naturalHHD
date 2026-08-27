@@ -25,11 +25,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 nhhd.py
     Top-level orchestrator for the natural HHD, torch backend.
 
-    Supports regular grids ('grid'+'spacings') and unstructured triangular
-    meshes ('points', optionally 'simplices'). NOTE: the spherical-grid
-    path ('sphericalgrid') is planned but not yet ported from pynhhd-v1.1
-    -- see the project plan for delivery order. Unstructured meshes are
-    currently 2D only (see unstructured.py).
+    Supports regular grids ('grid'+'spacings'), unstructured triangular
+    meshes ('points', optionally 'simplices'), and spherical/lat-lon grids
+    ('sphericalgrid'+'spacings'+'lat'+'lon'). Unstructured meshes and
+    spherical grids are currently 2D only (see unstructured.py, spherical.py).
 
     No differentiable path: every public entry point runs under
     torch.no_grad() (the user's decomposition never needs gradients through
@@ -54,6 +53,7 @@ import torch
 from .poisson import PoissonSolver, DEFAULT_MAX_POINTS
 from .structured import StructuredGrid
 from .unstructured import UnstructuredGrid
+from .spherical import StructuredSphericalGrid, EARTH_RADIUS_M
 from .utils.device import resolve_dtype, resolve_device, as_tensor, to_output, ensure_batched, restore_batch
 
 
@@ -65,6 +65,7 @@ DecompositionResult = namedtuple(
 class nHHD(object):
 
     def __init__(self, grid=None, spacings=None, points=None, simplices=None,
+                 sphericalgrid=None, lat=None, lon=None, r=None, tuning_param=0.0625,
                  dtype=None, device=None, max_points=DEFAULT_MAX_POINTS):
         '''
         Regular grid:
@@ -77,19 +78,25 @@ class nHHD(object):
                        via Delaunay triangulation if not given
             max_points: size guard on the dense N x N Green's matrix (see
                        poisson.py) -- defaults to poisson.DEFAULT_MAX_POINTS
-        '''
-        is_grid = grid is not None
-        is_points = points is not None
 
-        if is_grid == is_points:
+        Spherical (lat/lon) grid, 2D only:
+            sphericalgrid: tuple of grid dimensions (ny, nx)
+            spacings:      tuple of grid spacings in DEGREES (dlat, dlon)
+            lat, lon:      1D or 2D (ny, nx) lat/lon arrays in degrees
+            r:             planet radius in meters (default: Earth)
+            tuning_param:  self-term integration window (see
+                           greens.py's create_sphericalGrid_kernel)
+        '''
+        modes = [grid is not None, points is not None, sphericalgrid is not None]
+        if sum(modes) != 1:
             raise SyntaxError(
-                'nHHD Solver needs either the shape of a regular grid or the points of an '
-                'unstructured mesh (sphericalgrid input is not yet implemented in pynhhd)')
+                'nHHD Solver needs exactly one of: the shape of a regular grid, the points of '
+                'an unstructured mesh, or a sphericalgrid (+ spacings, lat, lon)')
 
         self.dtype = resolve_dtype(dtype)
         self.device = resolve_device(device)
 
-        if is_grid:
+        if grid is not None:
             if spacings is None:
                 raise SyntaxError('nHHD needs spacings for regular grid')
 
@@ -100,7 +107,7 @@ class nHHD(object):
             self._vfield_unbatched_ndim = self.mesh.dim + 1
             self._scalar_unbatched_ndim = self.mesh.dim
 
-        else:
+        elif points is not None:
             self.mesh = UnstructuredGrid(vertices=points, simplices=simplices,
                                           dtype=self.dtype, device=self.device)
             self.psolver = PoissonSolver(points=self.mesh.vertices, pvolumes=self.mesh.pvolumes,
@@ -108,6 +115,20 @@ class nHHD(object):
             self._mesh_type = 'points'
             self._vfield_unbatched_ndim = 2   # (nsimplices, dim)
             self._scalar_unbatched_ndim = 1   # (nvertices,)
+
+        else:
+            if spacings is None or lat is None or lon is None:
+                raise SyntaxError('nHHD needs spacings, lat, and lon for a spherical grid')
+
+            self.mesh = StructuredSphericalGrid(sphericalgrid=sphericalgrid, spacings=spacings,
+                                                 lat=lat, lon=lon, r=(r if r is not None else EARTH_RADIUS_M),
+                                                 dtype=self.dtype, device=self.device)
+            self.psolver = PoissonSolver(sphericalgrid=self.mesh.dims, spacings=self.mesh.dx,
+                                          lat=self.mesh.latv, lon=self.mesh.lonv, r=self.mesh.r,
+                                          tuning_param=tuning_param, dtype=self.dtype, device=self.device)
+            self._mesh_type = 'sphericalgrid'
+            self._vfield_unbatched_ndim = self.mesh.dim + 1
+            self._scalar_unbatched_ndim = self.mesh.dim
 
         self.dim = self.mesh.dim
         if self.dim != 2 and self.dim != 3:
