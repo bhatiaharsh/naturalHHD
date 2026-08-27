@@ -93,9 +93,9 @@ class UnstructuredGrid(object):
                 self.pvolumes[simp[2]] += self.cvolumes[sidx,2]
 
         # tetrahedralization
-        elif self.sdim == 3:
+        elif self.dim == 3:
 
-            raise ValueError('TODO: pvolumes for 3D')
+            raise NotImplementedError('pvolumes for 3D (tetrahedral) meshes not implemented')
             for sidx in range(self.nsimplices):
 
                 simp = self.simplices[sidx]
@@ -154,7 +154,7 @@ class UnstructuredGrid(object):
         LOGGER.info('Computing across_edge')
         mtimer = Timer()
 
-        self.across_edge = -1 * np.ones((self.nsimplices, 3), dtype=np.int)
+        self.across_edge = -1 * np.ones((self.nsimplices, 3), dtype=np.int64)
 
         for fidx in range(self.nsimplices):
             for i in range(3):
@@ -325,8 +325,8 @@ class UnstructuredGrid(object):
 
             div[a]  += dn
             div[b]  += dn
-            curlw[a] += tn
-            curlw[b] += tn
+            curlw[a] += dt
+            curlw[b] += dt
 
         div   *= -0.5
         curlw *=  0.5

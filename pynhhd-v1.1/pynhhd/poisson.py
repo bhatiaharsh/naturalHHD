@@ -26,7 +26,6 @@ import numpy as np
 from scipy import signal, spatial, integrate
 
 import shutil, tempfile
-import gsw
 from joblib import Parallel, delayed
 
 import logging
@@ -103,7 +102,7 @@ class PoissonSolver(object):
             raise SyntaxError("Poisson Solver needs point volumes for unstructured points")
 
         # (default) data type
-        self.dtype = np.float #32
+        self.dtype = np.float64
         if 'dtype' in args:
             self.dtype = kwargs['dtype']
 
@@ -267,7 +266,7 @@ class PoissonSolver(object):
         #
         pfolder         = tempfile.mkdtemp()
         ppath           = os.path.join(pfolder, 'p.mmap')
-        p               = np.memmap(ppath, dtype=np.float, shape=(ny,nx,2), mode='w+')
+        p               = np.memmap(ppath, dtype=np.float64, shape=(ny,nx,2), mode='w+')
         p[:]            = np.ones((ny,nx,2))*np.nan
 
 
@@ -346,7 +345,7 @@ class PoissonSolver(object):
         assert self.ptype == 'G' or self.ptype == 'P'
 
         if not self.ready:
-            self.prepare(num_cores)
+            self.prepare()
 
         fshape = f.shape
 
