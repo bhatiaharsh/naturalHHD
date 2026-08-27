@@ -95,7 +95,7 @@ class UnstructuredGrid(object):
         # tetrahedralization
         elif self.dim == 3:
 
-            raise ValueError('TODO: pvolumes for 3D')
+            raise NotImplementedError('pvolumes for 3D (tetrahedral) meshes not implemented')
             for sidx in range(self.nsimplices):
 
                 simp = self.simplices[sidx]
