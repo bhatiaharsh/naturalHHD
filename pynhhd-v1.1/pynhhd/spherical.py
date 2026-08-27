@@ -90,8 +90,12 @@ class StructuredSphericalGrid(object):
         self.lon  = kwargs['lon']           # needs to be 2D
         self.dim  = len(self.dims)
 
-        if self.dim != 2 and self.dim != 3:
-            raise ValueError("SphericalGrid works for 2D and 3D only")
+        if self.dim != 2:
+            # 3D used to be silently accepted here and only fail (or worse,
+            # silently compute wrong values) deep inside divcurl()/gradient() --
+            # no 3D spherical HHD formulation is defined anywhere in this
+            # codebase or the paper, so fail immediately and clearly instead.
+            raise NotImplementedError("StructuredSphericalGrid currently only supports 2D grids")
 
         if self.dim != len(self.dx):
             raise ValueError("Dimensions of spacings should match that of the grid")
@@ -220,23 +224,18 @@ class StructuredSphericalGrid(object):
             return (div, curl)
 
         elif self.dim == 3:
-            print('NOT IMPLEMENTED - WILL RETURN THE SAME AS CARTESIAN DIV')
-            # self.dx = (dz,dy,dx)
-            dudz, dudy, dudx = np.gradient(vfield[:,:,:,0], self.dx[0], self.dx[1], self.dx[2])
-            dvdz, dvdy, dvdx = np.gradient(vfield[:,:,:,1], self.dx[0], self.dx[1], self.dx[2])
-            dwdz, dwdy, dwdx = np.gradient(vfield[:,:,:,2], self.dx[0], self.dx[1], self.dx[2])
-
-            np.add(dudx, dvdy, dudx)
-            np.add(dudx, dvdz, dudx)
-
-            np.subtract(dwdy, dvdz, dwdy)
-            np.subtract(dudz, dwdx, dudz)
-            np.subtract(dvdx, dudy, dvdx)
-
-            mtimer.end()
-            LOGGER.debug('Computing divcurl done! took {}'.format(mtimer))
-
-            return (dudx, dwdy, dudz, dvdx)
+            # No 3D spherical HHD formulation is defined anywhere in this
+            # codebase or the paper (the vertical coordinate's meaning --
+            # altitude, pressure level, radius -- and the corresponding
+            # metric-aware divergence/curl were never specified). This used
+            # to silently fall back to a flat/Cartesian formula (wrong for
+            # spherical geometry regardless, and separately using the same
+            # buggy du/dx+dv/dy+dv/dz divergence as structured.py's 3D case
+            # once had) and only warn via a print() that was easy to miss.
+            # Fail loudly instead: this is an unimplemented feature, not a
+            # silently-approximate one.
+            raise NotImplementedError(
+                'StructuredSphericalGrid.divcurl is not implemented for 3D grids')
 
     def curl3D(self, vfield, verbose=False):
 
@@ -340,10 +339,9 @@ class StructuredSphericalGrid(object):
             grad = np.stack((ddx, ddy), axis = -1)
 
         elif self.dim == 3:
-            print('not implemented yet! - will return the same as cartesian')
-            # self.dx = (dz,dy,dx)
-            ddz, ddy, ddx = np.gradient(sfield, self.dx[0], self.dx[1], self.dx[2])
-            grad = np.stack((ddx, ddy, ddz), axis = -1)
+            # see the constructor / divcurl() -- 3D spherical is not defined,
+            # this used to silently fall back to a wrong flat/Cartesian gradient
+            raise NotImplementedError("StructuredSphericalGrid.gradient is not implemented for 3D grids")
 
         if verbose:
             print(' Done!',)
